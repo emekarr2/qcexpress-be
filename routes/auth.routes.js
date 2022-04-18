@@ -57,10 +57,8 @@ function between(min, max) {
 router.post('/verify_token',(req,res,next)=>{
 
   const token = between(100001, 900009);
-
 try{
   const email=req.body.email
-  console.log(email,typeof(email))
   mg.
   messages().
   send({
@@ -69,7 +67,11 @@ try{
       subject: 'Verify OTP',
       text: `Hi , We just received a request to verify your phone number associated with your QC-Express account via email.Please use the OTP code below to complete the Email verification process: ${token}`
   }).
-  then(res => console.log('res',res)).
+  then((response) => {
+    return res.status(200).json({
+      message: token,
+    })  
+  }).
   catch(err => console.log('err',err))
 }
 catch(e){
