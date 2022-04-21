@@ -65,7 +65,7 @@ try{
     from: process.env.MAIL_SENDER_EMAIL,
       to: email,
       subject: 'Verify OTP',
-      text: `Hi , We just received a request to verify your phone number associated with your QC-Express account via email.Please use the OTP code below to complete the Email verification process: ${token}`
+      text: `Hi , We just received a request to verify your Email associated with your QC-Express account via email.Please use the OTP code below to complete the Email verification process: ${token}`
   }).
   then((response) => {
     return res.status(200).json({
@@ -115,6 +115,7 @@ router.post('/signin', (req, res, next) => {
         expiresIn: 3600,
         firstname:getUser.firstname,
         lastname:getUser.lastname,
+        email:getUser.email,
         referral:getUser.referral,
         address:getUser.address
 

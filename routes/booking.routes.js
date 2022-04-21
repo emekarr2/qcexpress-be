@@ -9,10 +9,17 @@ var API_KEY = process.env.MAILGUN_API_KEY
 var DOMAIN = process.env.MAILGUN_DOMAIN
 const mg =mailgun({apiKey: API_KEY, domain: DOMAIN});// Sign-up
 
+function between(min, max) {  
+  return Math.floor(
+    Math.random() * (max - min) + min
+  )
+}
+
 router.post(
   '/create-booking',(req, res, next) => {   
     console.log("booking")
-    const tracking = Math.random().toString(36).substring(1,13);
+    const tracking = between(10000001, 90000009);
+    const email=req.body.email
         const book = new bookingSchema({
         name:req.body.name,
         shipment_type: req.body.shipment_type,
@@ -31,12 +38,11 @@ router.post(
         delivery_number: req.body.delivery_number,
         tracking_id: tracking
         })
-        console.log(book.name)
         mg.
         messages().
         send({
-          from: process.env.MAIL_SENDER_NAME,
-          to: 'tracyamara07@gmail.com',
+          from: process.env.MAIL_SENDER_EMAIL,
+          to: email,
             subject: 'Booking Successful',
             text: `Hi Anele,We just received a request for your booking with number ${tracking}`
         }).
