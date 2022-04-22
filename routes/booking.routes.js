@@ -44,7 +44,7 @@ router.post(
           from: process.env.MAIL_SENDER_EMAIL,
           to: email,
             subject: 'Booking Successful',
-            text: `Hi Anele,We just received a request for your booking with number ${tracking}`
+            text: `We just received a request for your booking with number ${tracking}`
         }).
         then(res => console.log('res',res)).
         catch(err => console.log('err',err))
