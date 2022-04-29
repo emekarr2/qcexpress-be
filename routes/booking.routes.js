@@ -67,7 +67,7 @@ router.post(
 
 // Get Users
 router.route('/').get((req, res, next) => {
-  userSchema.find((error, response)=> {
+  bookingSchema.find((error, response)=> {
     if (error) {
       return next(error)
     } else {
