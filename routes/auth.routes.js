@@ -28,7 +28,6 @@ router.post("/register-user", (req, res, next) => {
       password: hash,
       referral: referral,
     });
-
     user
       .save()
       .then((response) => {
@@ -50,22 +49,34 @@ function between(min, max) {
 }
 
 router.post("/verify_token", (req, res, next) => {
-  const token = between(100001, 900009);
+  const token = between(1001, 9009);
   try {
     const email = req.body.email;
-    mg.messages()
-      .send({
-        from: process.env.MAIL_SENDER_EMAIL,
-        to: email,
-        subject: "Verify OTP",
-        text: `Hi , We just received a request to verify your Email associated with your QC-Express account via email.Please use the OTP code below to complete the Email verification process: ${token}`,
+ userSchema
+      .findOne({
+        email: req.body.email,
       })
-      .then((response) => {
-        return res.status(200).json({
-          message: token,
-        });
-      })
-      .catch((err) => console.log("err", err));
+      .then(function (result) {
+        if (null != result) {
+          console.log("USERNAME ALREADY EXISTS:", result.username);
+          return res.status(200).json({
+            message: "User already exist!",
+          });
+                } else {
+          mg.messages()
+            .send({
+              from: process.env.MAIL_SENDER_EMAIL,
+              to: email,
+              subject: "Verify OTP",
+              text: `Hi , We just received a request to verify your Email associated with your QC-Express account via email.Please use the OTP code below to complete the Email verification process: ${token}`,
+            })
+            .then((response) => {
+              return res.status(200).json({
+                message: token,
+              });
+            });
+        }
+      });
   } catch (e) {
     console.log(e);
   }
