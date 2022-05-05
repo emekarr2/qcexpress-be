@@ -120,6 +120,7 @@ router.post("/signin", (req, res, next) => {
         lastname: getUser.lastname,
         email: getUser.email,
         referral: getUser.referral,
+        phonenumber:getUser.phonenumber,
         address: getUser.address,
         id: getUser._id,
       });
