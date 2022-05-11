@@ -9,6 +9,7 @@ const api = require('./routes/auth.routes')
 const booking = require('./routes/booking.routes')
 const emailsend= require('./routes/email.routes')
 const serviceupdate= require('./routes/service.routes')
+const price= require('./routes/prices.routes')
 
 mongoose
   .connect(`mongodb+srv://${process.env.SQL_DB_NAME}:${process.env.SQL_PASSWORD}@cluster0.9zbdr.mongodb.net/qc-app?retryWrites=true&w=majority`)
@@ -35,6 +36,8 @@ app.use('/api', api)
 app.use('/api/book/', booking)
 app.use('/api/email/', emailsend)
 app.use('/api/service-update/', serviceupdate)
+app.use('/api/getprice/', price)
+
 
 
 
