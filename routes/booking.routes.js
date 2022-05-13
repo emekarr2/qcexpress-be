@@ -20,6 +20,8 @@ router.post(
     console.log("booking")
     const tracking = between(10000001, 90000009);
     const email=req.body.email
+    const namee=req.body.name
+
         const book = new bookingSchema({
         name:req.body.name,
         shipment_type: req.body.shipment_type,
@@ -43,9 +45,11 @@ router.post(
         send({
           from: process.env.MAIL_SENDER_EMAIL,
           to: email,
-            subject: 'Booking Successful',
-            text: `We just received a request for your booking with number ${tracking}`
-        }).
+          subject: 'Booking Successful',
+          template: 'booking',
+          'v:name': namee,
+          'v:tracking': tracking
+                }).
         then(res => console.log('res',res)).
         catch(err => console.log('err',err))
         

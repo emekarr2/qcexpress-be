@@ -52,7 +52,7 @@ router.post("/verify_token", (req, res, next) => {
   const token = between(1001, 9009);
   try {
     const email = req.body.email;
- userSchema
+    userSchema
       .findOne({
         email: req.body.email,
       })
@@ -62,15 +62,17 @@ router.post("/verify_token", (req, res, next) => {
           return res.status(200).json({
             message: "User already exist!",
           });
-                } else {
+        } else {
           mg.messages()
             .send({
               from: process.env.MAIL_SENDER_EMAIL,
               to: email,
               subject: "Verify OTP",
-              text: `Hi , We just received a request to verify your Email associated with your QC-Express account via email.Please use the OTP code below to complete the Email verification process: ${token}`,
+              template: 'otp_verify',
+              'v:token': token
             })
             .then((response) => {
+              console.log(response);
               return res.status(200).json({
                 message: token,
               });
@@ -120,7 +122,7 @@ router.post("/signin", (req, res, next) => {
         lastname: getUser.lastname,
         email: getUser.email,
         referral: getUser.referral,
-        phonenumber:getUser.phonenumber,
+        phonenumber: getUser.phonenumber,
         address: getUser.address,
         id: getUser._id,
       });
