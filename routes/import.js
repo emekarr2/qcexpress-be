@@ -20,6 +20,7 @@ const importdata=[
     zone6: { price: 18034.07, rate:0.25},
     zone7: { price: 20909.67, rate:0.25},
     zone8: { price: 21805.4, rate:0.25},
+    
   },
   {
     weight: 1.5,
