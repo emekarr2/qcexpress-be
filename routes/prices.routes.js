@@ -288,14 +288,15 @@ const calculateImpPrice = (weight, zone) => {
   let price;
   console.log(weight, zone);
   let srate = zonedata.find((data) => data.weight == weight);
-  console.log(srate, "srate");
-  switch (zone.Zone) {
+  console.log(zone, "srate");
+  switch (zone) {
     case "zone1":
       rate = srate.zone1.rate;
       price = parseInt(srate.zone1.price);
       var margin = rate * price;
       var wrate = margin * 0.075;
       newtotal = price + wrate + margin;
+      console.log(newtotal)
       return newtotal;
       break;
     case "zone2":
@@ -509,5 +510,9 @@ router.post("/import", (req, res, next) => {
     });
   }
 });
+
+router.post("/getimportPrice", (req, res, next) => {
+  
+})
 
 module.exports = router;
