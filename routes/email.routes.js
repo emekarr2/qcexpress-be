@@ -20,9 +20,15 @@ router.post(
         messages().
         send({
           from: process.env.MAIL_SENDER_EMAIL,
-          to: process.env.MAIL_SENDER_EMAIL,
+          to: "tracyamara07@gmail.com",
             subject: 'New Customer Support',
-            text: `Hi Admin, Incoming message from ${name},with subject ${subject} and ${message}`
+            template: "message",
+            "v:name": name,
+            "v:email": email,
+            "v:subject": subject,
+            "v:message": message,
+
+            text: `Hi Admin, Incoming message from name : ${name},with subject  : ${subject} and message : ${message}`
         }).
         then(res => console.log('res',res)).
         catch(err => console.log('err',err))
@@ -42,4 +48,15 @@ router.post(
           })
     }
 )
+
+router.route("/").get((req, res, next) => {
+  EmailSchema.find((error, response) => {
+    if (error) {
+      return next(error);
+    } else {
+      return res.status(200).json(response);
+    }
+  });
+});
+
 module.exports = router

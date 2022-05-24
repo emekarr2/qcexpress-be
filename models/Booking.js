@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 let bookingSchema = new Schema({
+    category: {
+        type: String,
+    },
     shipment_type: {
         type: String,
     },

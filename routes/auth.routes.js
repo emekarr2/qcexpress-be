@@ -13,7 +13,6 @@ const mg = mailgun({ apiKey: API_KEY, domain: DOMAIN });
 router.post("/register-user", (req, res, next) => {
   console.log("referral");
   const referral = Math.random().toString(36).substring(2, 7);
-  console.log(referral);
   bcrypt.hash(req.body.password, 10).then((hash) => {
     const user = new userSchema({
       username: req.body.username,
@@ -68,8 +67,8 @@ router.post("/verify_token", (req, res, next) => {
               from: process.env.MAIL_SENDER_EMAIL,
               to: email,
               subject: "Verify OTP",
-              template: 'otp_verify',
-              'v:token': token
+              template: "otp_verify",
+              "v:token": token,
             })
             .then((response) => {
               console.log(response);
@@ -145,6 +144,60 @@ router.route("/").get((req, res, next) => {
       return res.status(200).json(response);
     }
   });
+});
+router.post("/forgot", async (req, res) => {
+  let getUser;
+  try {
+    const email = req.body.email;
+    const user = await userSchema.findOne({ email: email }).then((data) => {
+      getUser = data;
+    });
+    if (!getUser) {
+      return res.status(401).json({
+        message: "Email doesn't Exist",
+        type: "fail",
+      });
+    }
+    const link = `${process.env.BASE_URL}/reset/`;
+
+    mg.messages()
+      .send({
+        from: process.env.MAIL_SENDER_EMAIL,
+        to: email,
+        subject: "Forgot Password",
+        template: "forgot",
+        "v:token": link,
+      })
+      .then((response) => {
+        return res.status(200).json({
+          message: "Reset link have been sent",
+          id: getUser._id,
+        });
+      });
+  } catch (error) {
+    console.log(error);
+    res.send("An error occured");
+    console.log(error);
+  }
+});
+
+router.post("/reset/:userId", async (req, res) => {
+  try {
+    console.log(req.params.userId);
+    const user = await userSchema.findById(req.params.userId);
+    if (!user) return res.status(400).send("invalid link or expired");
+    bcrypt.hash(req.body.password, 10).then((hash) => {
+       userSchema.updateOne(
+        { _id: req.params.userId },
+        { $set: { password: hash } },
+        { new: true }
+      );
+    });
+    res.send("password reset sucessfully.");
+  } catch (error) {
+    res.send("An error occured");
+    console.log(error);
+  }
 });
 
 // Get Single User

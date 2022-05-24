@@ -4,6 +4,7 @@ const router = express.Router();
 const zonedata = require("./prices");
 const contries = require("./countries");
 const importdata = require("./import");
+const stateprice = require("./statesprice");
 
 let newtotal;
 
@@ -282,7 +283,6 @@ const calculateShipping = (country, weight, type) => {
   }
 };
 
-
 const calculateImpPrice = (weight, zone) => {
   let rate;
   let price;
@@ -296,7 +296,7 @@ const calculateImpPrice = (weight, zone) => {
       var margin = rate * price;
       var wrate = margin * 0.075;
       newtotal = price + wrate + margin;
-      console.log(newtotal)
+      console.log(newtotal);
       return newtotal;
       break;
     case "zone2":
@@ -353,7 +353,7 @@ const calculateImpPrice = (weight, zone) => {
       var margin = rate * price;
       var wrate = margin * 0.075;
       newtotal = price + wrate + margin;
-      console.log(newtotal,"kk")
+      console.log(newtotal, "kk");
       return newtotal;
       break;
   }
@@ -363,9 +363,9 @@ const calculateImpShipping = (country, weight, type) => {
   let zone = contries.find((zone) => zone.Countries === country);
   const newZone = zone.Zone;
   weight = parseFloat(weight);
-  console.log(weight)
+  console.log(weight);
   if (type == "Document" && weight <= 2) {
-    console.log(type,country,newZone)
+    console.log(type, country, newZone);
 
     if (weight <= 0.5) {
       switch (newZone) {
@@ -409,13 +409,13 @@ const calculateImpShipping = (country, weight, type) => {
           var margin = 0.25 * 20307.62;
           var rate = margin * 0.075;
           newtotal = 20307.62 + rate + margin;
-          setTotal(newtotal);
+          return newtotal;
           break;
         case "zone8":
           var margin = 0.25 * 21203.34;
           var rate = margin * 0.075;
           newtotal = 21203.34 + rate + margin;
-          console.log(newtotal)
+          console.log(newtotal);
           return newtotal;
           break;
       }
@@ -511,8 +511,62 @@ router.post("/import", (req, res, next) => {
   }
 });
 
-router.post("/getimportPrice", (req, res, next) => {
-  
-})
+router.post("/domestic", (req, res, next) => {
+  const { weight, delivery_state, pickup_state } = req.body;
+  const southwest = ["Ogun", "Oyo", "Osun", "Ekiti", "Ondo"];
+  try {
+    if (delivery_state === pickup_state) {
+      let srate = stateprice.find((data) => data.weight == weight);
+      var margin = 0.1 * parseInt(srate.Intracity);
+      var rate = margin * 0.075;
+      newtotal = parseInt(srate.Intracity) + rate + margin;
+
+      res.status(201).json({
+        message: "success",
+        result: Math.round(newtotal),
+        sres: Math.ceil(newtotal),
+      });
+    } else if (delivery_state === "Lagos" && southwest.includes(pickup_state)) {
+      let srate = stateprice.find((data) => data.weight == weight);
+      var margin = 0.12 * parseInt(srate.IntraRegion);
+      var rate = margin * 0.075;
+      newtotal = parseInt(srate.IntraRegion) + rate + margin;
+
+      res.status(201).json({
+        message: "success",
+        result: Math.round(newtotal),
+        sres: Math.ceil(newtotal),
+      });
+    } else if (delivery_state !== "Lagos" && delivery_state !== pickup_state) {
+      let srate = stateprice.find((data) => data.weight == weight);
+      var margin = 0.1 * parseInt(srate.Interstate);
+
+      var rate = Math.ceil(parseInt(margin * 0.075));
+
+      newtotal = parseInt(srate.Interstate) + rate + margin;
+
+      res.status(201).json({
+        message: "success",
+        result: Math.round(newtotal),
+        sres: Math.ceil(newtotal),
+      });
+    } else {
+      let srate = stateprice.find((data) => data.weight == weight);
+      var margin = 0.10 * parseInt(srate.ZoneC);
+
+      var rate = margin * 0.075;
+
+      newtotal = parseInt(srate.ZoneC) + rate + margin;
+
+      res.status(201).json({
+        message: "success",
+        result: Math.round(newtotal),
+        sres: Math.ceil(newtotal),
+      });
+    }
+  } catch (e) {
+    console.log;
+  }
+});
 
 module.exports = router;
