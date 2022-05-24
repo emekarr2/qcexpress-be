@@ -187,11 +187,14 @@ router.post("/reset/:userId", async (req, res) => {
     const user = await userSchema.findById(req.params.userId);
     if (!user) return res.status(400).send("invalid link or expired");
     bcrypt.hash(req.body.password, 10).then((hash) => {
-       userSchema.updateOne(
-        { _id: req.params.userId },
-        { $set: { password: hash } },
-        { new: true }
-      );
+      user.password = hash;
+      user.save();
+
+      //  userSchema.updateOne(
+      //   { _id: req.params.userId },
+      //   { $set: { password: hash } },
+      //   { new: true }
+      // );
     });
     res.send("password reset sucessfully.");
   } catch (error) {
