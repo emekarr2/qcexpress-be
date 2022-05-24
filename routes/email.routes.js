@@ -20,7 +20,7 @@ router.post(
         messages().
         send({
           from: process.env.MAIL_SENDER_EMAIL,
-          to: "tracyamara07@gmail.com",
+          to: process.env.MAIL_SENDER_EMAIL,
             subject: 'New Customer Support',
             template: "message",
             "v:name": name,
