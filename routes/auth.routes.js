@@ -158,7 +158,7 @@ router.post("/forgot", async (req, res) => {
         type: "fail",
       });
     }
-    const link = `${process.env.BASE_URL}/reset/`;
+    const link = `https://qcexpress.co/reset`;
 
     mg.messages()
       .send({
