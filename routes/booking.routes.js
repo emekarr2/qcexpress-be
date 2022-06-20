@@ -12,7 +12,199 @@ const mg = mailgun({ apiKey: API_KEY, domain: DOMAIN }); // Sign-up
 function between(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
+const Dhl=(name,email)=>{
 
+  var data = JSON.stringify({
+  "plannedShippingDateAndTime": "2022-06-21T09:00:00GMT+01:00",
+  "productCode": "P",
+  "accounts": [
+    {
+      "number": "365022156",
+      "typeCode": "shipper"
+    }
+  ],
+  "pickup": {
+    "isRequested": false
+  },
+  "outputImageProperties": {
+    "allDocumentsInOneImage": true,
+    "encodingFormat": "pdf",
+    "imageOptions": [
+      {
+        "templateName": "ECOM26_84_A4_001",
+        "typeCode": "label"
+      },
+      {
+        "templateName": "ARCH_8X4_A4_002",
+        "isRequested": true,
+        "hideAccountNumber": true,
+        "typeCode": "waybillDoc"
+      },
+      {
+        "templateName": "COMMERCIAL_INVOICE_P_10",
+        "invoiceType": "proforma",
+        "languageCode": "eng",
+        "isRequested": true,
+        "typeCode": "invoice"
+      }
+    ]
+  },
+  "customerDetails": {
+    "shipperDetails": {
+      "postalAddress": {
+        "postalCode": "",
+        "cityName": "Ikeja",
+        "countryCode": "NG",
+        "addressLine1": "Test address 1",
+        "countyName": "Lagos"
+      },
+      "contactInformation": {
+        "phone": "+234800000000",
+        "companyName": "Test Company 1",
+        "fullName": name,
+        "email": email
+      },
+      "typeCode": "business"
+    },
+    "receiverDetails": {
+      "postalAddress": {
+        "postalCode": "",
+        "cityName": "Accra",
+        "countryCode": "GH",
+        "addressLine1": "Test address 2",
+        "countyName": "Accra"
+      },
+      "contactInformation": {
+        "phone": "+233000000000",
+        "companyName": "Test Company 2",
+        "fullName": "Jane Monroe",
+        "email": "janemonroe@testmail.com"
+      },
+      "typeCode": "business"
+    }
+  },
+  "content": {
+    "exportDeclaration": {
+      "lineItems": [
+        {
+          "number": 1,
+          "quantity": {
+            "unitOfMeasurement": "PCS",
+            "value": 1
+          },
+          "price": 20,
+          "description": "Bag of Rice x1",
+          "weight": {
+            "netValue": 50,
+            "grossValue": 50
+          },
+          "commodityCodes": [
+            {
+              "typeCode": "outbound",
+              "value": "HS1234567890"
+            }
+          ],
+          "exportReasonType": "permanent",
+          "manufacturerCountry": "NG"
+        },
+        {
+          "number": 2,
+          "quantity": {
+            "unitOfMeasurement": "PCS",
+            "value": 1
+          },
+          "price": 15,
+          "description": "Bag of Tomatoes x1",
+          "weight": {
+            "netValue": 50,
+            "grossValue": 50
+          },
+          "commodityCodes": [
+            {
+              "typeCode": "outbound",
+              "value": "HS9876543210"
+            }
+          ],
+          "exportReasonType": "permanent",
+          "manufacturerCountry": "NG"
+        }
+      ],
+      "exportReason": "Permanent",
+      "additionalCharges": [
+        {
+          "value": 20,
+          "typeCode": "freight"
+        }
+      ],
+      "invoice": {
+        "number": "invoice number 01",
+        "date": "2022-04-12"
+      },
+      "placeOfIncoterm": "Accra",
+      "exportReasonType": "permanent",
+      "shipmentType": "personal"
+    },
+    "unitOfMeasurement": "metric",
+    "isCustomsDeclarable": true,
+    "incoterm": "DAP",
+    "description": "Shipment descriptiom",
+    "packages": [
+      {
+        "weight": 50,
+        "description": "Bag of Rice x1",
+        "dimensions": {
+          "length": 15,
+          "width": 15,
+          "height": 40
+        }
+      },
+      {
+        "weight": 50,
+        "description": "Bag of Tomatoes x1",
+        "dimensions": {
+          "length": 15,
+          "width": 15,
+          "height": 40
+        }
+      }
+    ],
+    "declaredValueCurrency": "USD",
+    "declaredValue": 50
+  },
+  "valueAddedServices": [
+    {
+      "serviceCode": "II",
+      "value": 50,
+      "currency": "USD"
+    }
+  ],
+  "customerReferences": [
+    {
+      "value": "Customer Reference",
+      "typeCode": "CU"
+    }
+  ]
+});
+
+var config = {
+  method: 'post',
+  url: 'https://express.api.dhl.com/mydhlapi/test/shipments',
+  headers: { 
+    'Authorization': 'Basic cXVhcnR6Y2xhc3NORzpVIzB5R140clZeMnZEJDR1', 
+    'Content-Type': 'application/json', 
+    'Cookie': 'BIGipServer~WSB~pl_wsb-express-chd.dhl.com_443=292047013.64288.0000; TS0136675b=012d4839b35db23a6543a3ec3cbe18a85c27f24bfb06c8a29dca215d3cac9250ec4e00bda42df603723d9fe734d7b481902220558c'
+  },
+  data : data
+};
+
+axios(config)
+.then(function (response) {
+  console.log(JSON.stringify(response.data));
+})
+.catch(function (error) {
+  console.log(error);
+});
+}
 router.post("/create-booking", (req, res, next) => {
   console.log("booking");
   const tracking = between(10000001, 90000009);
@@ -38,6 +230,7 @@ router.post("/create-booking", (req, res, next) => {
     delivery_number: req.body.delivery_number,
     tracking_id: tracking,
   });
+  Dhl(email,namee)
   mg.messages()
     .send({
       from: process.env.MAIL_SENDER_EMAIL,

@@ -169,6 +169,7 @@ router.post("/forgot", async (req, res) => {
         "v:token": link,
       })
       .then((response) => {
+        console.log(response)
         return res.status(200).json({
           message: "Reset link have been sent",
           id: getUser._id,
@@ -190,11 +191,7 @@ router.post("/reset/:userId", async (req, res) => {
       user.password = hash;
       user.save();
 
-      //  userSchema.updateOne(
-      //   { _id: req.params.userId },
-      //   { $set: { password: hash } },
-      //   { new: true }
-      // );
+
     });
     res.send("password reset sucessfully.");
   } catch (error) {
