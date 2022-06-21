@@ -97,184 +97,307 @@ const calculateShipping = (country, weight, type) => {
     if (weight <= 0.5) {
       switch (newZone) {
         case "zone1":
-          var margin = 0.4 * 10360.61;
-          var rate = margin * 0.075;
-          newtotal = 10360.61 + margin + rate;
-          return newtotal;
-        case "zone2":
-          var margin = 0.23 * 11704.17;
-          var rate = margin * 0.075;
-          newtotal = 11704.17 + rate + margin;
-          return newtotal;
-        case "zone3":
-          var margin = 0.2 * 13047.72;
-          var rate = margin * 0.075;
-          newtotal = 13047.72 + margin + rate;
-          return newtotal;
-        case "zone4":
-          var margin = 0.18 * 15286.99;
-          var rate = margin * 0.075;
-          newtotal = 15286.99 + rate + margin;
-          return newtotal;
-        case "zone5":
-          var margin = 0.18 * 15734.84;
-          var rate = margin * 0.075;
-          newtotal = 15734.84 + rate + margin;
-          return newtotal;
-        case "zone6":
-          var margin = 0.18 * 17078.41;
-          var rate = margin * 0.075;
-          newtotal = 17078.41 + rate + margin;
-          return newtotal;
-        case "zone7":
-          var margin = 0.13 * 19411.93;
-          var rate = margin * 0.075;
-          newtotal = 19411.93 + rate + margin;
-          return newtotal;
-          break;
-        case "zone8":
-          var margin = 0.1 * 20307.61;
-          var rate = margin * 0.075;
-          newtotal = 20307.61 + rate + margin;
-          return newtotal;
-      }
-    } else if (weight <= 1) {
-      switch (newZone) {
-        case "zone1":
-          var margin = 0.4 * 10420.57;
-          var rate = margin * 0.075;
-          newtotal = 10420.57 + rate + margin;
-          return newtotal;
-        case "zone2":
-          var margin = 0.23 * 11764.13;
-          var rate = margin * 0.075;
-          newtotal = 11764.13 + rate + margin;
-          return newtotal;
-        case "zone3":
-          var margin = 0.2 * 13107.67;
-          var rate = margin * 0.075;
-          newtotal = 13107.67 + rate + margin;
-          return newtotal;
-        case "zone4":
-          var margin = 0.18 * 15346.96;
-          var rate = margin * 0.075;
-          newtotal = 15346.96 + rate + margin;
-          return newtotal;
-        case "zone5":
-          var margin = 0.18 * 15794.8;
-          var rate = margin * 0.075;
-          newtotal = 15794.8 + rate + margin;
-          return newtotal;
-        case "zone6":
-          var margin = 0.18 * 17138.36;
-          var rate = margin * 0.075;
-          newtotal = 17138.36 + rate + margin;
-          return newtotal;
-        case "zone7":
-          var margin = 0.13 * 20013.98;
-          var rate = margin * 0.075;
-          newtotal = 20013.98 + rate + margin;
-          return newtotal;
+        rate = srate.zone1.rate;
+        price = srate.zone1.price;
+        var margin = rate * price;
+        var wrate = margin * 0.075;
+        newtotal = price + wrate + margin;
+        return newtotal;
+        break;
+      case "zone2":
+        rate = srate.zone2.rate;
+        price = srate.zone2.price;
+        var margin = rate * price;
+        var wrate = margin * 0.075;
+        newtotal = price + wrate + margin;
+        return newtotal;
+        break;
+      case "zone3":
+        rate = srate.zone3.rate;
+        price = srate.zone3.price;
+        var margin = rate * price;
+        var wrate = margin * 0.075;
+        newtotal = price + wrate + margin;
+        return newtotal;
+        break;
+      case "zone4":
+        rate = srate.zone4.rate;
+        price = srate.zone4.price;
+        var margin = rate * price;
+        var wrate = margin * 0.075;
+        newtotal = price + wrate + margin;
+        return newtotal;
+        break;
+      case "zone5":
+        rate = srate.zone5.rate;
+        price = srate.zone5.price;
+        var margin = rate * price;
+        var wrate = margin * 0.075;
+        newtotal = price + wrate + margin;
+        return newtotal;
+        break;
+      case "zone6":
+        rate = srate.zone6.rate;
+        price = srate.zone6.price;
+        var margin = rate * price;
+        var wrate = margin * 0.075;
+        newtotal = price + wrate + margin;
+        return newtotal;
+        break;
+      case "zone7":
+        rate = srate.zone7.rate;
+        price = srate.zone7.price;
+        var margin = rate * price;
+        var wrate = margin * 0.075;
+        newtotal = price + wrate + margin;
+        return newtotal;
+        break;
+      case "zone8":
+        console.log("here")
+        rate = srate.zone8.rate;
+        console.log(rate)
 
-        case "zone8":
-          var margin = 0.1 * 20909.67;
-          var rate = margin * 0.075;
-          newtotal = 20909.67 + rate + margin;
-          return newtotal;
-      }
-    } else if (weight <= 1.5) {
-      switch (newZone) {
-        case "zone1":
-          var margin = 0.4 * 10480.53;
-          var rate = margin * 0.075;
-          newtotal = 10480.53 + rate + margin;
-          return newtotal;
-        case "zone2":
-          var margin = 0.23 * 11824.08;
-          var rate = margin * 0.075;
-          newtotal = 11824.08 + rate + margin;
-          return newtotal;
-        case "zone3":
-          var margin = 0.2 * 13167.63;
-          var rate = margin * 0.075;
-          newtotal = 13167.63 + rate + margin;
-          return newtotal;
-        case "zone4":
-          var margin = 0.18 * 15406.91;
-          var rate = margin * 0.075;
-          newtotal = 15406.91 + rate + margin;
-          return newtotal;
-        case "zone5":
-          var margin = 0.18 * 15854.75;
-          var rate = margin * 0.075;
-          newtotal = 15854.75 + rate + margin;
-          return newtotal;
-        case "zone6":
-          var margin = 0.18 * 17198.32;
-          var rate = margin * 0.075;
-          newtotal = 17198.32 + rate + margin;
-          return newtotal;
-        case "zone7":
-          var margin = 0.13 * 20616.03;
-          var rate = margin * 0.075;
-          newtotal = 20616.03 + rate + margin;
-          return newtotal;
+        price = srate.zone8.price;
+        console.log(price)
 
-        case "zone8":
-          var margin = 0.1 * 21511.72;
-          var rate = margin * 0.075;
-          newtotal = 21511.72 + rate + margin;
-          return newtotal;
-      }
-    } else if (weight <= 2) {
-      console.log("hello");
-      switch (newZone) {
-        case "zone1":
-          var margin = 0.4 * 10540.49;
-          var rate = margin * 0.075;
-          newtotal = 10540.49 + rate + margin;
-          return newtotal;
-        case "zone2":
-          var margin = 0.23 * 11884.04;
-          var rate = margin * 0.075;
-          newtotal = 11884.04 + rate + margin;
-          return newtotal;
-        case "zone3":
-          var margin = 0.2 * 13220.0759;
-          var rate = margin * 0.075;
-          newtotal = 13220.0759 + rate + margin;
-          return newtotal;
-        case "zone4":
-          var margin = 0.18 * 15466.87;
-          var rate = margin * 0.075;
-          newtotal = 15466.87 + rate + margin;
-          return newtotal;
-          break;
-        case "zone5":
-          var margin = 0.18 * 15914.71;
-          var rate = margin * 0.075;
-          newtotal = 15914.71 + rate + margin;
+        var margin = rate * price;
+        var wrate = margin * 0.075;
+        console.log(wrate)
 
-          return newtotal;
-        case "zone6":
-          var margin = 0.18 * 17258.28;
-          var rate = margin * 0.075;
-          newtotal = 17258.28 + rate + margin;
-          console.log(newtotal, "newtotal6");
+        newtotal = price + wrate + margin;
+        console.log(newtotal)
 
-          return newtotal;
-        case "zone7":
-          var margin = 0.13 * 21218.09;
-          var rate = margin * 0.075;
-          newtotal = 21218.09 + rate + margin;
+        return newtotal;
+        break;
+    }
+  };
+  const calculateShipping = (country, weight, type) => {
+    let zone = contries.find((zone) => zone.Countries === country);
+    console.log(zone,country, weight, type);
+    const newZone = zone.Zone;
+    console.log(type, weight);
+    weight = parseFloat(weight);
+    if (type == "Document" && weight <= 2) {
+      if (weight <= 0.5) {
+        switch (newZone) {
+          case "zone1":
+            var margin = 0.4 * 11261.53875;
+            var rate = margin * 0.075;
+            newtotal = 11261.53875 + margin + rate;
+            return newtotal;
+            break;
+          case "zone2":
+            var margin = 0.23 * 12721.92625;
+            var rate = margin * 0.075;
+            newtotal = 12721.92625 + rate + margin;
+            return newtotal;
+            break;
+          case "zone3":
+            var margin = 0.2 * 14182.3003125;
+            var rate = margin * 0.075;
+            newtotal = 14182.3003125 + margin + rate;
+            return newtotal;
+            break;
+          case "zone4":
+            var margin = 0.18 * 16616.301875;
+            var rate = margin * 0.075;
+            newtotal = 16616.301875 + rate + margin;
+            return newtotal;
+            break;
+          case "zone5":
+            var margin = 0.18 * 17103.08875;
+            var rate = margin * 0.075;
+            newtotal = 17103.08875 + rate + margin;
+            return newtotal;
+            break;
+          case "zone6":
+            var margin = 0.18 * 18563.4896875;
+            var rate = margin * 0.075;
+            newtotal = 18563.4896875 + rate + margin;
+            return newtotal;
+            break;
+          case "zone7":
+            var margin = 0.13 * 21099.9253125;
+            var rate = margin * 0.075;
+            newtotal = 21099.9253125 + rate + margin;
+            setTotal(newtotal);
+            break;
+          case "zone8":
+            var margin = 0.1 * 21484.2646875;
+            var rate = margin * 0.075;
+            newtotal = 21484.2646875+ rate + margin;
+            return newtotal;
+            break;
+        }
+      } else if (weight <= 1) {
+        switch (newZone) {
+          case "zone1":
+            var margin = 0.4 * 11326.710625;
+            var rate = margin * 0.075;
+            newtotal = 11326.710625 + rate + margin;
+            return newtotal;
+            break;
+          case "zone2":
+            var margin = 0.23 * 12787.098125;
+            var rate = margin * 0.075;
+            newtotal = 12787.098125 + rate + margin;
+            return newtotal;
+            break;
+          case "zone3":
+            var margin = 0.2 * 14247.4721875;
+            var rate = margin * 0.075;
+            newtotal = 14247.4721875 + rate + margin;
+            return newtotal;
+            break;
+          case "zone4":
+            var margin = 0.18 * 16681.47375;
+            var rate = margin * 0.075;
+            newtotal = 16681.47375 + rate + margin;
+            return newtotal;
+            break;
+          case "zone5":
+            var margin = 0.18 * 17168.260625;
+            var rate = margin * 0.075;
+            newtotal = 17168.260625 + rate + margin;
+            return newtotal;
+            break;
+          case "zone6":
+            var margin = 0.18 * 18628.6615625;
+            var rate = margin * 0.075;
+            newtotal = 18628.6615625 + rate + margin;
+            return newtotal;
+            break;
+          case "zone7":
+            var margin = 0.13 * 21754.3315625;
+            var rate = margin * 0.075;
+            newtotal = 21754.3315625 + rate + margin;
+            return newtotal;
+            break;
 
-          return newtotal;
-        case "zone8":
-          var margin = 0.1 * 22113.78;
-          var rate = margin * 0.075;
-          newtotal = 22113.78 + rate + margin;
-          console.log(newtotal, "newtotal8");
-          return newtotal;
+          case "zone8":
+            var margin = 0.1 * 21549.4365625;
+            var rate = margin * 0.075;
+            newtotal = 21549.4365625 + rate + margin;
+            return newtotal;
+            break;
+        }
+      } else if (weight <= 1.5) {
+        switch (newZone) {
+          case "zone1":
+            var margin = 0.4 * 11391.8825;
+            var rate = margin * 0.075;
+            newtotal = 11391.8825 + rate + margin;
+            return newtotal;
+            break;
+          case "zone2":
+            var margin = 0.23 * 12852.27;
+            var rate = margin * 0.075;
+            newtotal = 12852.27 + rate + margin;
+            return newtotal;
+            break;
+          case "zone3":
+            var margin = 0.2 * 14312.6440625;
+            var rate = margin * 0.075;
+            newtotal = 14312.6440625 + rate + margin;
+            return newtotal;
+            break;
+          case "zone4":
+            var margin = 0.18 * 16746.645625;
+            var rate = margin * 0.075;
+            newtotal = 16746.645625 + rate + margin;
+            return newtotal;
+            break;
+          case "zone5":
+            var margin = 0.18 * 17233.4325;
+            var rate = margin * 0.075;
+            newtotal = 17233.4325 + rate + margin;
+            return newtotal;
+            break;
+          case "zone6":
+            var margin = 0.18 * 18693.8334375;
+            var rate = margin * 0.075;
+            newtotal = 18693.8334375 + rate + margin;
+            return newtotal;
+            break;
+          case "zone7":
+            var margin = 0.13 * 22408.7378125;
+            var rate = margin * 0.075;
+            newtotal = 22408.7378125 + rate + margin;
+            return newtotal;
+            break;
+
+          case "zone8":
+            var margin = 0.1 * 21614.6084375;
+            var rate = margin * 0.075;
+            newtotal = 21614.6084375 + rate + margin;
+            return newtotal;
+            break;
+        }
+      } else if (weight <= 2) {
+        switch (newZone) {
+          case "zone1":
+            var margin = 0.4 * 11457.054375;
+            var rate = margin * 0.075;
+            newtotal = 11457.054375 + rate + margin;
+            console.log(newtotal, "newtotal1");
+
+            return newtotal;
+            break;
+          case "zone2":
+            var margin = 0.23 * 12917.441875;
+            var rate = margin * 0.075;
+            newtotal = 12917.441875 + rate + margin;
+            console.log(newtotal, "newtotal2");
+
+            return newtotal;
+            break;
+          case "zone3":
+            var margin = 0.2 * 14377.8159375;
+            var rate = margin * 0.075;
+            newtotal = 14377.8159375 + rate + margin;
+            console.log(newtotal, "newtotal3");
+
+            return newtotal;
+            break;
+          case "zone4":
+            var margin = 0.18 * 16811.8175;
+            var rate = margin * 0.075;
+            newtotal = 16811.8175 + rate + margin;
+            console.log(newtotal, "newtotal");
+            return newtotal;
+            break;
+          case "zone5":
+            var margin = 0.18 * 17298.604375;
+            var rate = margin * 0.075;
+            newtotal = 17298.604375 + rate + margin;
+            console.log(newtotal, "newtotal5");
+
+            return newtotal;
+            break;
+          case "zone6":
+            var margin = 0.18 * 18759.0053125;
+            var rate = margin * 0.075;
+            newtotal = 18759.0053125 + rate + margin;
+            console.log(newtotal, "newtotal6");
+
+            return newtotal;
+            break;
+          case "zone7":
+            var margin = 0.13 * 23063.1440625;
+            var rate = margin * 0.075;
+            newtotal = 23063.1440625 + rate + margin;
+            console.log(newtotal, "newtotal7");
+
+            return newtotal;
+            break;
+          case "zone8":
+            var margin = 0.1 * 21679.7803125;
+            var rate = margin * 0.075;
+            newtotal = 21679.78 + rate + margin;
+            console.log(newtotal, "newtotal8");
+
+            return newtotal;
+            break;
       }
     }
   } else {
