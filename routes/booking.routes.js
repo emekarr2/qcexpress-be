@@ -8,6 +8,7 @@ var mailgun = require("mailgun-js");
 var API_KEY = process.env.MAILGUN_API_KEY;
 var DOMAIN = process.env.MAILGUN_DOMAIN;
 const mg = mailgun({ apiKey: API_KEY, domain: DOMAIN }); // Sign-up
+const axios = require('axios').default;
 
 function between(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
@@ -15,7 +16,7 @@ function between(min, max) {
 const Dhl=(name,email)=>{
 
   var data = JSON.stringify({
-  "plannedShippingDateAndTime": "2022-06-21T09:00:00GMT+01:00",
+  "plannedShippingDateAndTime": "2022-06-23T09:00:00GMT+01:00",
   "productCode": "P",
   "accounts": [
     {
@@ -76,9 +77,9 @@ const Dhl=(name,email)=>{
       },
       "contactInformation": {
         "phone": "+233000000000",
-        "companyName": "Test Company 2",
-        "fullName": "Jane Monroe",
-        "email": "janemonroe@testmail.com"
+        "companyName": "Digicomme",
+        "fullName": name,
+        "email": email
       },
       "typeCode": "business"
     }
@@ -199,7 +200,24 @@ var config = {
 
 axios(config)
 .then(function (response) {
-  console.log(JSON.stringify(response.data));
+  console.log(JSON.stringify(response.data.documents));
+
+  mg.messages()
+    .send({
+      from: process.env.MAIL_SENDER_EMAIL,
+      to: email,
+      subject: 'Attachment', // Subject line                                                 
+      text: 'Booking attachment', // plaintext body                                                 
+      html: '<b>Hello world attachment test HTML</b>', // html body                                               
+      attachments: [
+          {
+              filename: 'fileName.pdf',                                         
+              contentType: 'application/pdf'
+          }]
+  
+    })
+    .then((res) => console.log("res", res))
+    .catch((err) => console.log("err", err));
 })
 .catch(function (error) {
   console.log(error);
@@ -230,7 +248,7 @@ router.post("/create-booking", (req, res, next) => {
     delivery_number: req.body.delivery_number,
     tracking_id: tracking,
   });
-  Dhl(email,namee)
+ Dhl(namee,email)
   mg.messages()
     .send({
       from: process.env.MAIL_SENDER_EMAIL,
