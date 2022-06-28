@@ -187,16 +187,7 @@ const Dhl=(name,email)=>{
   ]
 });
 
-var config = {
-  method: 'post',
-  url: 'https://express.api.dhl.com/mydhlapi/test/shipments',
-  headers: { 
-    'Authorization': 'Basic cXVhcnR6Y2xhc3NORzpVIzB5R140clZeMnZEJDR1', 
-    'Content-Type': 'application/json', 
-    'Cookie': 'BIGipServer~WSB~pl_wsb-express-chd.dhl.com_443=292047013.64288.0000; TS0136675b=012d4839b35db23a6543a3ec3cbe18a85c27f24bfb06c8a29dca215d3cac9250ec4e00bda42df603723d9fe734d7b481902220558c'
-  },
-  data : data
-};
+c
 
 axios(config)
 .then(function (response) {
