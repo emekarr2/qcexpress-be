@@ -8,218 +8,215 @@ var mailgun = require("mailgun-js");
 var API_KEY = process.env.MAILGUN_API_KEY;
 var DOMAIN = process.env.MAILGUN_DOMAIN;
 const mg = mailgun({ apiKey: API_KEY, domain: DOMAIN }); // Sign-up
-const axios = require('axios').default;
+const axios = require("axios").default;
 
 function between(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
-const Dhl=(name,email)=>{
-
+const Dhl = (name, email) => {
   var data = JSON.stringify({
-  "plannedShippingDateAndTime": "2022-06-23T09:00:00GMT+01:00",
-  "productCode": "P",
-  "accounts": [
-    {
-      "number": "365022156",
-      "typeCode": "shipper"
-    }
-  ],
-  "pickup": {
-    "isRequested": false
-  },
-  "outputImageProperties": {
-    "allDocumentsInOneImage": true,
-    "encodingFormat": "pdf",
-    "imageOptions": [
+    plannedShippingDateAndTime: "2022-06-23T09:00:00GMT+01:00",
+    productCode: "P",
+    accounts: [
       {
-        "templateName": "ECOM26_84_A4_001",
-        "typeCode": "label"
+        number: "365022156",
+        typeCode: "shipper",
       },
-      {
-        "templateName": "ARCH_8X4_A4_002",
-        "isRequested": true,
-        "hideAccountNumber": true,
-        "typeCode": "waybillDoc"
-      },
-      {
-        "templateName": "COMMERCIAL_INVOICE_P_10",
-        "invoiceType": "proforma",
-        "languageCode": "eng",
-        "isRequested": true,
-        "typeCode": "invoice"
-      }
-    ]
-  },
-  "customerDetails": {
-    "shipperDetails": {
-      "postalAddress": {
-        "postalCode": "",
-        "cityName": "Ikeja",
-        "countryCode": "NG",
-        "addressLine1": "Test address 1",
-        "countyName": "Lagos"
-      },
-      "contactInformation": {
-        "phone": "+234800000000",
-        "companyName": "Test Company 1",
-        "fullName": name,
-        "email": email
-      },
-      "typeCode": "business"
+    ],
+    pickup: {
+      isRequested: false,
     },
-    "receiverDetails": {
-      "postalAddress": {
-        "postalCode": "",
-        "cityName": "Accra",
-        "countryCode": "GH",
-        "addressLine1": "Test address 2",
-        "countyName": "Accra"
-      },
-      "contactInformation": {
-        "phone": "+233000000000",
-        "companyName": "Digicomme",
-        "fullName": name,
-        "email": email
-      },
-      "typeCode": "business"
-    }
-  },
-  "content": {
-    "exportDeclaration": {
-      "lineItems": [
+    outputImageProperties: {
+      allDocumentsInOneImage: true,
+      encodingFormat: "pdf",
+      imageOptions: [
         {
-          "number": 1,
-          "quantity": {
-            "unitOfMeasurement": "PCS",
-            "value": 1
-          },
-          "price": 20,
-          "description": "Bag of Rice x1",
-          "weight": {
-            "netValue": 50,
-            "grossValue": 50
-          },
-          "commodityCodes": [
-            {
-              "typeCode": "outbound",
-              "value": "HS1234567890"
-            }
-          ],
-          "exportReasonType": "permanent",
-          "manufacturerCountry": "NG"
+          templateName: "ECOM26_84_A4_001",
+          typeCode: "label",
         },
         {
-          "number": 2,
-          "quantity": {
-            "unitOfMeasurement": "PCS",
-            "value": 1
-          },
-          "price": 15,
-          "description": "Bag of Tomatoes x1",
-          "weight": {
-            "netValue": 50,
-            "grossValue": 50
-          },
-          "commodityCodes": [
-            {
-              "typeCode": "outbound",
-              "value": "HS9876543210"
-            }
-          ],
-          "exportReasonType": "permanent",
-          "manufacturerCountry": "NG"
-        }
-      ],
-      "exportReason": "Permanent",
-      "additionalCharges": [
+          templateName: "ARCH_8X4_A4_002",
+          isRequested: true,
+          hideAccountNumber: true,
+          typeCode: "waybillDoc",
+        },
         {
-          "value": 20,
-          "typeCode": "freight"
-        }
+          templateName: "COMMERCIAL_INVOICE_P_10",
+          invoiceType: "proforma",
+          languageCode: "eng",
+          isRequested: true,
+          typeCode: "invoice",
+        },
       ],
-      "invoice": {
-        "number": "invoice number 01",
-        "date": "2022-04-12"
-      },
-      "placeOfIncoterm": "Accra",
-      "exportReasonType": "permanent",
-      "shipmentType": "personal"
     },
-    "unitOfMeasurement": "metric",
-    "isCustomsDeclarable": true,
-    "incoterm": "DAP",
-    "description": "Shipment descriptiom",
-    "packages": [
-      {
-        "weight": 50,
-        "description": "Bag of Rice x1",
-        "dimensions": {
-          "length": 15,
-          "width": 15,
-          "height": 40
-        }
+    customerDetails: {
+      shipperDetails: {
+        postalAddress: {
+          postalCode: "",
+          cityName: "Ikeja",
+          countryCode: "NG",
+          addressLine1: "Test address 1",
+          countyName: "Lagos",
+        },
+        contactInformation: {
+          phone: "+234800000000",
+          companyName: "Test Company 1",
+          fullName: name,
+          email: email,
+        },
+        typeCode: "business",
       },
-      {
-        "weight": 50,
-        "description": "Bag of Tomatoes x1",
-        "dimensions": {
-          "length": 15,
-          "width": 15,
-          "height": 40
-        }
-      }
-    ],
-    "declaredValueCurrency": "USD",
-    "declaredValue": 50
-  },
-  "valueAddedServices": [
-    {
-      "serviceCode": "II",
-      "value": 50,
-      "currency": "USD"
-    }
-  ],
-  "customerReferences": [
-    {
-      "value": "Customer Reference",
-      "typeCode": "CU"
-    }
-  ]
-});
-
-c
-
-axios(config)
-.then(function (response) {
-  console.log(JSON.stringify(response.data.documents));
-
-  mg.messages()
-    .send({
-      from: process.env.MAIL_SENDER_EMAIL,
-      to: email,
-      subject: 'Attachment', // Subject line                                                 
-      text: 'Booking attachment', // plaintext body                                                 
-      html: '<b>Hello world attachment test HTML</b>', // html body                                               
-      attachments: [
+      receiverDetails: {
+        postalAddress: {
+          postalCode: "",
+          cityName: "Accra",
+          countryCode: "GH",
+          addressLine1: "Test address 2",
+          countyName: "Accra",
+        },
+        contactInformation: {
+          phone: "+233000000000",
+          companyName: "Digicomme",
+          fullName: name,
+          email: email,
+        },
+        typeCode: "business",
+      },
+    },
+    content: {
+      exportDeclaration: {
+        lineItems: [
           {
-              filename: 'fileName.pdf',                                         
-              contentType: 'application/pdf'
-          }]
-  
+            number: 1,
+            quantity: {
+              unitOfMeasurement: "PCS",
+              value: 1,
+            },
+            price: 20,
+            description: "Bag of Rice x1",
+            weight: {
+              netValue: 50,
+              grossValue: 50,
+            },
+            commodityCodes: [
+              {
+                typeCode: "outbound",
+                value: "HS1234567890",
+              },
+            ],
+            exportReasonType: "permanent",
+            manufacturerCountry: "NG",
+          },
+          {
+            number: 2,
+            quantity: {
+              unitOfMeasurement: "PCS",
+              value: 1,
+            },
+            price: 15,
+            description: "Bag of Tomatoes x1",
+            weight: {
+              netValue: 50,
+              grossValue: 50,
+            },
+            commodityCodes: [
+              {
+                typeCode: "outbound",
+                value: "HS9876543210",
+              },
+            ],
+            exportReasonType: "permanent",
+            manufacturerCountry: "NG",
+          },
+        ],
+        exportReason: "Permanent",
+        additionalCharges: [
+          {
+            value: 20,
+            typeCode: "freight",
+          },
+        ],
+        invoice: {
+          number: "invoice number 01",
+          date: "2022-04-12",
+        },
+        placeOfIncoterm: "Accra",
+        exportReasonType: "permanent",
+        shipmentType: "personal",
+      },
+      unitOfMeasurement: "metric",
+      isCustomsDeclarable: true,
+      incoterm: "DAP",
+      description: "Shipment descriptiom",
+      packages: [
+        {
+          weight: 50,
+          description: "Bag of Rice x1",
+          dimensions: {
+            length: 15,
+            width: 15,
+            height: 40,
+          },
+        },
+        {
+          weight: 50,
+          description: "Bag of Tomatoes x1",
+          dimensions: {
+            length: 15,
+            width: 15,
+            height: 40,
+          },
+        },
+      ],
+      declaredValueCurrency: "USD",
+      declaredValue: 50,
+    },
+    valueAddedServices: [
+      {
+        serviceCode: "II",
+        value: 50,
+        currency: "USD",
+      },
+    ],
+    customerReferences: [
+      {
+        value: "Customer Reference",
+        typeCode: "CU",
+      },
+    ],
+  });
+
+  axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data.documents));
+
+      mg.messages()
+        .send({
+          from: process.env.MAIL_SENDER_EMAIL,
+          to: email,
+          subject: "Attachment", // Subject line
+          text: "Booking attachment", // plaintext body
+          html: "<b>Hello world attachment test HTML</b>", // html body
+          attachments: [
+            {
+              filename: "fileName.pdf",
+              contentType: "application/pdf",
+            },
+          ],
+        })
+        .then((res) => console.log("res", res))
+        .catch((err) => console.log("err", err));
     })
-    .then((res) => console.log("res", res))
-    .catch((err) => console.log("err", err));
-})
-.catch(function (error) {
-  console.log(error);
-});
-}
+    .catch(function (error) {
+      console.log(error);
+    });
+};
 router.post("/create-booking", (req, res, next) => {
   console.log("booking");
   const tracking = between(10000001, 90000009);
   const email = req.body.email;
   const namee = req.body.name;
-
+  console.log(req.body);
   const book = new bookingSchema({
     category: req.body.category,
     name: req.body.name,
@@ -232,6 +229,7 @@ router.post("/create-booking", (req, res, next) => {
     number_items: req.body.number_items,
     value: req.body.value,
     pickup_address: req.body.pickup_address,
+    pickup_date: req.body.pickup_date,
     country: req.body.country,
     delivery_address: req.body.delivery_address,
     delivery_name: req.body.delivery_name,
@@ -239,7 +237,118 @@ router.post("/create-booking", (req, res, next) => {
     delivery_number: req.body.delivery_number,
     tracking_id: tracking,
   });
- Dhl(namee,email)
+  const date = new Date(req.body.pickup_date);
+
+  const isoDate = date.toISOString();
+  console.log(isoDate);
+  var data = JSON.stringify({
+    plannedShippingDateAndTime: isoDate,
+    productCode: "N",
+    pickup: {
+      isRequested: false,
+    },
+    outputImageProperties: {
+      allDocumentsInOneImage: true,
+      encodingFormat: "pdf",
+      imageOptions: [
+        {
+          templateName: "ECOM26_84_A4_001",
+          typeCode: "label",
+        },
+        {
+          templateName: "ARCH_8X4_A4_002",
+          isRequested: true,
+          typeCode: "waybillDoc",
+          hideAccountNumber: true,
+        },
+      ],
+    },
+    accounts: [
+      {
+        number: "365022156",
+        typeCode: "shipper",
+      },
+    ],
+    customerDetails: {
+      shipperDetails: {
+        postalAddress: {
+          postalCode: "",
+          cityName: "Lagos",
+          countryCode: "NG",
+          addressLine1: "Fara Park Estate",
+          countyName: "Lagos",
+        },
+        contactInformation: {
+          phone: "+234800000000",
+          companyName: "Fara Park Estate",
+          fullName: "Tracyanele",
+          email: "tracyamara07@gmail.com",
+        },
+        typeCode: "business",
+      },
+      receiverDetails: {
+        postalAddress: {
+          postalCode: "",
+          cityName: "Ajah",
+          countryCode: "NG",
+          addressLine1: "Amuwo-Oodfin",
+          countyName: "Lagos",
+        },
+        contactInformation: {
+          phone: "+23488169530309",
+          companyName: "Digicomme",
+          fullName: "Ahmed Musa",
+          email: "ahmed@gmail.com",
+        },
+        typeCode: "business",
+      },
+    },
+    content: {
+      unitOfMeasurement: "metric",
+      isCustomsDeclarable: false,
+      incoterm: "DAP",
+      description: "Shipment description",
+      packages: [
+        {
+          weight: 1,
+          description: req.body.description,
+          dimensions: {
+            length: req.body.length,
+            width: req.body.width,
+            height: req.body.height,
+          },
+        },
+        {
+          weight: req.body.weight,
+          description: req.body.description,
+          dimensions: {
+            length: req.body.length,
+            width: req.body.width,
+            height: req.body.height,
+          },
+        },
+      ],
+    },
+  });
+
+  var config = {
+    method: "post",
+    url: "https://express.api.dhl.com/mydhlapi/test/shipments",
+    headers: {
+      "Authorization": "Basic cXVhcnR6Y2xhc3NORzpVIzB5R140clZeMnZEJDR1",
+      "Content-Type": "application/json",
+    },
+    data: data,
+  };
+
+  axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+
   mg.messages()
     .send({
       from: process.env.MAIL_SENDER_EMAIL,
@@ -280,14 +389,15 @@ router.route("/").get((req, res, next) => {
 
 router.route("/category/:category").get((req, res, next) => {
   let category = req.query.category;
-  console.log(category)
-  bookingSchema.find({
-    category: category,
-  }).then(data=>{
-    return res.status(200).json(data);
-
-  })
-   });
+  console.log(category);
+  bookingSchema
+    .find({
+      category: category,
+    })
+    .then((data) => {
+      return res.status(200).json(data);
+    });
+});
 
 // Get Single User
 router.route("/user-profile/:id").get(authorize, (req, res, next) => {
