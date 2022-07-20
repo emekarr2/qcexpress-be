@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const err_middleware = require('./middlewares/error');
 require('dotenv').config();
 // start services
 require('./startups/index');
@@ -21,7 +22,13 @@ app.use(
 		extended: false,
 	}),
 );
-app.use(cors());
+
+app.use(
+	cors({
+		origin: ['http://localhost:3000', process.env.CLIENT_URL],
+		credentials: true,
+	}),
+);
 
 // Serve static resources
 app.use('/public', express.static('public'));
@@ -35,8 +42,4 @@ const server = app.listen(process.env.PORT, () => {
 	console.log('Connected to port ' + process.env.PORT);
 });
 
-app.use(function (err, req, res, next) {
-	console.error(err.message);
-	if (!err.statusCode) err.statusCode = 500;
-	res.status(err.statusCode).send(err.message);
-});
+app.use(err_middleware);
