@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose');
-const hasher = require('../../../authentication/hasher');
+const hasher = require('../../authentication/hasher');
 
 const UserSchema = new Schema(
 	{
