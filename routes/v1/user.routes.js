@@ -5,4 +5,6 @@ const router = Router();
 
 router.post('/create', user_controller.createUser);
 
+router.put('/verify-email', user_controller.verifyUserEmail);
+
 module.exports = router;

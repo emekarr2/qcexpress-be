@@ -13,6 +13,10 @@ const UserSchema = new Schema(
 			index: true,
 			required: true,
 		},
+		verified_email: {
+			type: Boolean,
+			default: false,
+		},
 		firstname: {
 			type: String,
 			required: true,
@@ -33,6 +37,10 @@ const UserSchema = new Schema(
 			unique: true,
 			required: true,
 			index: true,
+		},
+		verified_mobile: {
+			type: Boolean,
+			default: false,
 		},
 		city: {
 			type: String,

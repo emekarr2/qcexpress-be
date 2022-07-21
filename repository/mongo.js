@@ -188,7 +188,6 @@ module.exports = class MongoDbRepository {
 		try {
 			await this.model
 				.findOneAndUpdate(filter, payload, {}, (err, doc, res) => {
-					if (doc) throw new Error('Document not found');
 					success = true;
 				})
 				.clone();

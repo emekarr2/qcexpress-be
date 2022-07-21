@@ -1,4 +1,5 @@
 const CreateUserUseCase = require('../usecases/CreateUserUseCase');
+const VerifyUserUseCase = require('../usecases/VerifyUserEmailUseCase');
 const GenerateOtpUseCase = require('../../authentication/usecases/Otp/GenerateOtpUseCase');
 const ServerResponse = require('../../../utils/response');
 const EmailService = require('../../../services/EmailService');
@@ -18,6 +19,16 @@ class UserController {
 				payload: { 'v:token': code },
 			});
 			ServerResponse.message('user created successfully').respond(res);
+		} catch (err) {
+			next(err);
+		}
+	}
+
+	async verifyUserEmail(req, res, next) {
+		try {
+			const data = req.body;
+			await VerifyUserUseCase.execute(data);
+			ServerResponse.message('email verified successfully').respond(res);
 		} catch (err) {
 			next(err);
 		}
