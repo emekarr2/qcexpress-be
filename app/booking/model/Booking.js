@@ -35,7 +35,7 @@ let BookingSchema = new Schema(
 			required: true,
 		},
 		value: {
-			type: String,
+			type: Number,
 			default: 0,
 			get: (v) => (v / 100).toFixed(2),
 			set: (v) => v * 100,
