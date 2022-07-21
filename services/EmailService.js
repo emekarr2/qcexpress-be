@@ -11,8 +11,8 @@ class EmailService {
 	}
 
 	async send({ from, to, subject, template, payload }) {
-		console.log(from, to, payload);
 		await this.#mg.messages().send({ from, to, subject, template, ...payload });
+		console.log(`email sent to ${to}`);
 	}
 }
 
