@@ -1,13 +1,13 @@
 const Joi = require('joi');
 const { joiPassword } = require('joi-password');
 
-export const validateNewUser = (data) =>
+const validateNewUser = (data) =>
 	Joi.object({
 		country: Joi.string().max(50).required(),
 		email: Joi.string().email().required(),
 		firstname: Joi.string().max(50).required(),
 		lastname: Joi.string().max(50).required(),
-		username: Joi.string().max(50).required(),
+		username: Joi.string().max(10).required(),
 		phonenumber: Joi.string().max(30).required(),
 		city: Joi.string().max(50).required(),
 		state: Joi.string().max(50).required(),
@@ -21,10 +21,10 @@ export const validateNewUser = (data) =>
 			.minOfNumeric(1)
 			.noWhiteSpaces()
 			.required(),
-		referral: Joi.string().default(null),
+		referral: Joi.string().required(),
 	}).validate(data);
 
-export const validateUpdateUser = (data) =>
+const validateUpdateUser = (data) =>
 	Joi.object({
 		country: Joi.string().max(50),
 		email: Joi.string().email(),
@@ -44,3 +44,8 @@ export const validateUpdateUser = (data) =>
 			.minOfNumeric(1)
 			.noWhiteSpaces(),
 	}).validate(data);
+
+module.exports = {
+	validateNewUser,
+	validateUpdateUser,
+};

@@ -6,7 +6,7 @@ class Hasher {
 	#salt_rounds = 10;
 
 	async hashPassword(password) {
-		return await this.#hasher.hash(password, this.__genSalt);
+		return await this.#hasher.hash(password, await this.__genSalt());
 	}
 
 	async verifyPassword(password, hash) {
@@ -14,7 +14,7 @@ class Hasher {
 	}
 
 	async __genSalt() {
-		return await this.#hasher.__genSalt(this.#salt_rounds);
+		return await this.#hasher.genSalt(this.#salt_rounds);
 	}
 }
 

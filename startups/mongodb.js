@@ -1,23 +1,23 @@
 const mongoose = require('mongoose');
 
 class MongoDBClient {
+	#connection;
 	constructor() {
 		this.MONGODB_URL = process.env.MONGODB_URL;
 		mongoose.set('debug', true);
 		mongoose.set('toJSON', { virtuals: true });
 		mongoose.Promise = global.Promise;
-		this.connection = undefined;
 		console.log('URL -==> ', this.MONGODB_URL);
 	}
 
 	getConnection() {
-		return this.connection;
+		return this.#connection;
 	}
 
 	async connect() {
 		try {
-			if (this.connection) return this.connection;
-			this.connection = await mongoose.connect(this.MONGODB_URL, {
+			if (this.#connection) return this.#connection;
+			this.#connection = await mongoose.connect(this.MONGODB_URL, {
 				useNewUrlParser: true,
 				useCreateIndex: true,
 				useFindAndModify: false,
@@ -39,7 +39,7 @@ class MongoDBClient {
 	}
 
 	async disconnect() {
-		await this.connection.disconnect();
+		await this.#connection.disconnect();
 		console.log('MongoDBClient() => DISCONNECTED!');
 	}
 }

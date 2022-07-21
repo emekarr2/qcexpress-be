@@ -26,6 +26,7 @@ const UserSchema = new Schema(
 			unique: true,
 			required: true,
 			index: true,
+			maxlength: 10,
 		},
 		phonenumber: {
 			type: String,
@@ -54,7 +55,7 @@ const UserSchema = new Schema(
 	{ timestamps: true },
 );
 
-UserSchema.pre('save', async function () {
+UserSchema.pre('save', async function (next) {
 	if (this.isModified('password')) {
 		this.password = await hasher.hashPassword(this.password);
 	}

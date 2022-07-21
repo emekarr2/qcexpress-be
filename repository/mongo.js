@@ -1,4 +1,4 @@
-class MongoDbRepository {
+module.exports = class MongoDbRepository {
 	constructor(model) {
 		this.model = model;
 	}
@@ -67,6 +67,10 @@ class MongoDbRepository {
 			result = err.message;
 		}
 		return result;
+	}
+
+	async count(filter) {
+		return this.model.count(filter);
 	}
 
 	async findLast(filter) {
@@ -238,4 +242,4 @@ class MongoDbRepository {
 			this.model.deleteMany(condition);
 		}
 	}
-}
+};
