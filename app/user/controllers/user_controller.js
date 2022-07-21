@@ -9,12 +9,13 @@ class UserController {
 			const data = req.body;
 			await CreateUserUseCase.execute(data);
 			const code = await GenerateOtpUseCase.execute(data.email);
+
 			await EmailService.send({
 				from: process.env.MAIL_SENDER_EMAIL,
 				to: data.email,
 				subject: 'Verify OTP',
 				template: 'otp_verify',
-				payload: { 'v:token': code.code },
+				payload: { 'v:token': code },
 			});
 			ServerResponse.message('user created successfully').respond(res);
 		} catch (err) {

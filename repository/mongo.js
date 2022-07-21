@@ -1,3 +1,5 @@
+const { success } = require('../utils/response');
+
 module.exports = class MongoDbRepository {
 	constructor(model) {
 		this.model = model;
@@ -147,6 +149,16 @@ module.exports = class MongoDbRepository {
 			results = [];
 		}
 		return results;
+	}
+
+	async upsert(filter, payload) {
+		try {
+			return await this.model.findOneAndUpdate(filter, payload, {
+				upsert: true,
+			});
+		} catch (err) {
+			return false;
+		}
 	}
 
 	async updateById(id, payload) {
