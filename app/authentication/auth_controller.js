@@ -1,8 +1,14 @@
+// usecases
 const GenerateOtpUseCase = require('./usecases/Otp/GenerateOtpUseCase');
 const LoginUserUseCase = require('./usecases/Authentication/LoginUserUseCase');
 const GeneratePasswordResetLinkUseCase = require('./usecases/Authentication/GeneratePasswordResetLinkUseCase');
 const ResetPasswordUseCase = require('./usecases/Authentication/ResetPasswordUseCase');
+const GenerateAccessTokenUseCase = require('./usecases/Authentication/GenerateAccessTokenUseCase');
+
+// utils
 const ServerResponse = require('../../utils/response');
+
+// services
 const EmailService = require('../../services/EmailService');
 
 class AuthController {
@@ -63,6 +69,28 @@ class AuthController {
 					.respond(res);
 			await ResetPasswordUseCase.execute(token, req.body.password);
 			ServerResponse.message('password reset successfully').respond(res);
+		} catch (err) {
+			next(err);
+		}
+	}
+
+	async generateAccessToken(req, res, next) {
+		try {
+			const tokenHeader = req.headers.authorization;
+			if (typeof tokenHeader === 'undefined')
+				return ServerResponse.message(
+					'an refresh token is required for this route',
+				)
+					.success(false)
+					.statusCode(403)
+					.respond(res);
+			const refresh_token = tokenHeader.split(' ')[1];
+			const access_token = await GenerateAccessTokenUseCase.execute(
+				refresh_token,
+			);
+			ServerResponse.message('token generated successfully')
+				.data({ access_token })
+				.respond(res);
 		} catch (err) {
 			next(err);
 		}

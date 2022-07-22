@@ -10,4 +10,6 @@ router.get('/password-reset-link', AuthController.passwordResetLink);
 
 router.put('/reset-password', AuthController.resetPassword);
 
+router.get('/generate-access', AuthController.generateAccessToken);
+
 module.exports = router;
