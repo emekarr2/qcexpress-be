@@ -15,8 +15,6 @@ class ResetPasswordUseCase {
 
 	async execute(token, password) {
 		const payload = await this.#tokens.verifyToken(token);
-		const expired = payload.exp - payload.iat;
-		if (expired < 0) throw new CustomError('token expired', 400);
 		const result = this.#validateUser.validateUpdateUser({ password });
 		if (result.error) throw new CustomError(result.error.message, 400);
 		await this.#userRepo.updateByFields(

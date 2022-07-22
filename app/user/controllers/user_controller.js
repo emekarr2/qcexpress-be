@@ -1,8 +1,16 @@
+// usecases
 const CreateUserUseCase = require('../usecases/CreateUserUseCase');
 const VerifyUserUseCase = require('../usecases/VerifyUserEmailUseCase');
 const GenerateOtpUseCase = require('../../authentication/usecases/Otp/GenerateOtpUseCase');
+
+// utils
 const ServerResponse = require('../../../utils/response');
+
+// services
 const EmailService = require('../../../services/EmailService');
+
+// repos
+const user_repo = require('../repository/user_repo');
 
 class UserController {
 	async createUser(req, res, next) {
@@ -29,6 +37,20 @@ class UserController {
 			const data = req.body;
 			await VerifyUserUseCase.execute(data);
 			ServerResponse.message('email verified successfully').respond(res);
+		} catch (err) {
+			next(err);
+		}
+	}
+
+	async deleteUser(req, res, next) {
+		try {
+			const deleted = await user_repo.deleteById(req.user.userId);
+			if (!deleted)
+				return ServerResponse.message('user does not exist')
+					.success(false)
+					.statusCode(404)
+					.respond(res);
+			ServerResponse.message('user deleted successfully').respond(res);
 		} catch (err) {
 			next(err);
 		}

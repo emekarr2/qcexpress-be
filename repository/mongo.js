@@ -227,13 +227,11 @@ module.exports = class MongoDbRepository {
 	}
 
 	async deleteById(id) {
-		let success;
 		try {
 			const deletedDoc = await this.model.findByIdAndDelete(id);
-			if (deletedDoc) throw new Error('Document not found');
-			success = true;
+			return deletedDoc;
 		} catch (err) {
-			success = err.message;
+			success = null;
 		}
 		return success;
 	}
