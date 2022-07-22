@@ -2,6 +2,7 @@
 const CreateUserUseCase = require('../usecases/CreateUserUseCase');
 const VerifyUserUseCase = require('../usecases/VerifyUserEmailUseCase');
 const GenerateOtpUseCase = require('../../authentication/usecases/Otp/GenerateOtpUseCase');
+const UpdateUserUseCase = require('../usecases/UpdateUserUseCase');
 
 // utils
 const ServerResponse = require('../../../utils/response');
@@ -60,6 +61,29 @@ class UserController {
 		try {
 			const user = await user_repo.findById(req.user.userId);
 			ServerResponse.message('profile fetched').data(user).respond(res);
+		} catch (err) {
+			next(err);
+		}
+	}
+
+	async updateUser(req, res, next) {
+		try {
+			const payload = req.body;
+			if (!Object.keys(payload).length) {
+				return ServerResponse.message('pass in data to be updated')
+					.statusCode(400)
+					.success(false)
+					.respond(res);
+			}
+			if (payload.email || payload.phonenumber)
+				return ServerResponse.message(
+					'use a different route to update email or phone number',
+				)
+					.statusCode(400)
+					.success(false)
+					.respond(res);
+			const updated = await UpdateUserUseCase.execute(req.user.userId, payload);
+			ServerResponse.message('profile updated').data(updated).respond(res);
 		} catch (err) {
 			next(err);
 		}

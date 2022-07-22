@@ -12,4 +12,6 @@ router.delete('/delete', auth_middleware, user_controller.deleteUser);
 
 router.get('/profile', auth_middleware, user_controller.getUserProfile);
 
+router.put('/profile/update', auth_middleware, user_controller.updateUser);
+
 module.exports = router;

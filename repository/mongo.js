@@ -162,15 +162,11 @@ module.exports = class MongoDbRepository {
 	}
 
 	async updateById(id, payload) {
-		let success;
 		try {
-			const updatedDoc = await this.model.findByIdAndUpdate(id, payload);
-			if (updatedDoc) throw new Error('Doc could not be updated');
-			success = true;
+			return await this.model.findByIdAndUpdate(id, payload, { new: true });
 		} catch (err) {
-			success = false;
+			success = null;
 		}
-		return success;
 	}
 
 	async updateByIdAndReturn(id, payload) {
@@ -203,9 +199,8 @@ module.exports = class MongoDbRepository {
 			await this.model.findOneAndUpdate(
 				filter,
 				payload,
-				{},
+				{ new: true },
 				(err, doc, res) => {
-					if (doc) throw new Error('Document not found');
 					result = doc;
 				},
 			);
