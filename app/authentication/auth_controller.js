@@ -1,4 +1,5 @@
 const GenerateOtpUseCase = require('./usecases/Otp/GenerateOtpUseCase');
+const LoginUserUseCase = require('./usecases/Authentication/LoginUserUseCase');
 const ServerResponse = require('../../utils/response');
 const EmailService = require('../../services/EmailService');
 
@@ -15,6 +16,18 @@ class AuthController {
 				payload: { 'v:token': code },
 			});
 			ServerResponse.message('otp sent successfully').respond(res);
+		} catch (err) {
+			next(err);
+		}
+	}
+
+	async loginUser(req, res, next) {
+		try {
+			const data = req.body;
+			const tokens = await LoginUserUseCase.execute(data);
+			ServerResponse.message('user logged in successfully')
+				.data(tokens)
+				.respond(res);
 		} catch (err) {
 			next(err);
 		}

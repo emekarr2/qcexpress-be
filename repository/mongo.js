@@ -8,7 +8,7 @@ module.exports = class MongoDbRepository {
 	// used to ensure that filter options works properly
 	__cleanFilterOptions(filter) {
 		Object.keys(filter).forEach((item) => {
-			filter[item] && delete filter[item];
+			if (filter[item] === null) delete filter[item];
 			if (item === 'id') {
 				filter._id = filter.id;
 				delete filter['id'];

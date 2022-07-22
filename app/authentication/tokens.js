@@ -7,25 +7,45 @@ class AuthTokensManager {
 		ACCESS_TOKEN: 'ACCESS_TOKEN',
 	};
 
-	async generateAccessToken(email, userId, username, firstname, lastname) {
+	async generateAccessToken(
+		email,
+		userId,
+		username,
+		firstname,
+		lastname,
+		verified_email,
+		verified_mobile,
+	) {
 		return this.#__generateTokens(
 			email,
 			userId,
 			username,
 			firstname,
 			lastname,
+			verified_email,
+			verified_mobile,
 			this.TOKEN_TYPE.ACCESS_TOKEN,
 			60 * 10, // expires in 10 mins
 		);
 	}
 
-	async generateRefreshToken() {
+	async generateRefreshToken(
+		email,
+		userId,
+		username,
+		firstname,
+		lastname,
+		verified_email,
+		verified_mobile,
+	) {
 		return this.#__generateTokens(
 			email,
 			userId,
 			username,
 			firstname,
 			lastname,
+			verified_email,
+			verified_mobile,
 			this.TOKEN_TYPE.REFRESH_TOKEN,
 			60 * 720 * 60, // expires in 30 days
 		);
@@ -37,6 +57,8 @@ class AuthTokensManager {
 		username,
 		firstname,
 		lastname,
+		verified_email,
+		verified_mobile,
 		type,
 		expiresIn,
 	) {
@@ -47,6 +69,8 @@ class AuthTokensManager {
 				username,
 				firstname,
 				lastname,
+				verified_email,
+				verified_mobile,
 				type,
 			},
 			process.env.JWT_SECRET,

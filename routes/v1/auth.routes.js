@@ -4,4 +4,6 @@ const router = Router();
 
 router.post('/resend-otp', AuthController.resendOtp);
 
+router.post('/login', AuthController.loginUser);
+
 module.exports = router;
