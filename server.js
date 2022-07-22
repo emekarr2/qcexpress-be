@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const err_middleware = require('./middlewares/error');
 require('dotenv').config();
@@ -30,6 +31,8 @@ app.use(
 		credentials: true,
 	}),
 );
+
+app.use(helmet());
 
 // Serve static resources
 app.use('/public', express.static('public'));
