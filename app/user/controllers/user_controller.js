@@ -55,6 +55,15 @@ class UserController {
 			next(err);
 		}
 	}
+
+	async getUserProfile(req, res, next) {
+		try {
+			const user = await user_repo.findById(req.user.userId);
+			ServerResponse.message('profile fetched').data(user).respond(res);
+		} catch (err) {
+			next(err);
+		}
+	}
 }
 
 module.exports = Object.freeze(new UserController());

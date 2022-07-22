@@ -10,4 +10,6 @@ router.put('/verify-email', user_controller.verifyUserEmail);
 
 router.delete('/delete', auth_middleware, user_controller.deleteUser);
 
+router.get('/profile', auth_middleware, user_controller.getUserProfile);
+
 module.exports = router;
