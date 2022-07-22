@@ -1,5 +1,6 @@
 const GenerateOtpUseCase = require('./usecases/Otp/GenerateOtpUseCase');
 const LoginUserUseCase = require('./usecases/Authentication/LoginUserUseCase');
+const GeneratePasswordResetLinkUseCase = require('./usecases/Authentication/GeneratePasswordResetLinkUseCase');
 const ServerResponse = require('../../utils/response');
 const EmailService = require('../../services/EmailService');
 
@@ -28,6 +29,24 @@ class AuthController {
 			ServerResponse.message('user logged in successfully')
 				.data(tokens)
 				.respond(res);
+		} catch (err) {
+			next(err);
+		}
+	}
+
+	async passwordResetLink(req, res, next) {
+		try {
+			const { email } = req.body;
+			const link = await GeneratePasswordResetLinkUseCase.execute(email);
+			console.log(link);
+			await EmailService.send({
+				from: process.env.MAIL_SENDER_EMAIL,
+				to: email,
+				subject: 'Reset Password',
+				template: 'forgot',
+				payload: { 'v:token': link },
+			});
+			ServerResponse.message('link sent successfully').respond(res);
 		} catch (err) {
 			next(err);
 		}

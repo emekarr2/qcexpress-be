@@ -16,15 +16,17 @@ class AuthTokensManager {
 		verified_email,
 		verified_mobile,
 	) {
-		return this.#__generateTokens(
-			email,
-			userId,
-			username,
-			firstname,
-			lastname,
-			verified_email,
-			verified_mobile,
-			this.TOKEN_TYPE.ACCESS_TOKEN,
+		return this.generateTokens(
+			{
+				email,
+				userId,
+				username,
+				firstname,
+				lastname,
+				verified_email,
+				verified_mobile,
+				type: this.TOKEN_TYPE.ACCESS_TOKEN,
+			},
 			60 * 10, // expires in 10 mins
 		);
 	}
@@ -38,7 +40,23 @@ class AuthTokensManager {
 		verified_email,
 		verified_mobile,
 	) {
-		return this.#__generateTokens(
+		return this.generateTokens(
+			{
+				email,
+				userId,
+				username,
+				firstname,
+				lastname,
+				verified_email,
+				verified_mobile,
+				type: this.TOKEN_TYPE.REFRESH_TOKEN,
+			},
+			60 * 720 * 60, // expires in 30 days
+		);
+	}
+
+	async generateTokens(
+		{
 			email,
 			userId,
 			username,
@@ -46,20 +64,8 @@ class AuthTokensManager {
 			lastname,
 			verified_email,
 			verified_mobile,
-			this.TOKEN_TYPE.REFRESH_TOKEN,
-			60 * 720 * 60, // expires in 30 days
-		);
-	}
-
-	async #__generateTokens(
-		email,
-		userId,
-		username,
-		firstname,
-		lastname,
-		verified_email,
-		verified_mobile,
-		type,
+			type,
+		},
 		expiresIn,
 	) {
 		return this.#jwt.sign(
