@@ -85,6 +85,10 @@ class AuthTokensManager {
 			},
 		);
 	}
+
+	async verifyToken(token) {
+		return this.#jwt.verify(token, process.env.JWT_SECRET);
+	}
 }
 
 module.exports = Object.freeze(new AuthTokensManager());

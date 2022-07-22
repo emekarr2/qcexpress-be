@@ -1,6 +1,7 @@
 const GenerateOtpUseCase = require('./usecases/Otp/GenerateOtpUseCase');
 const LoginUserUseCase = require('./usecases/Authentication/LoginUserUseCase');
 const GeneratePasswordResetLinkUseCase = require('./usecases/Authentication/GeneratePasswordResetLinkUseCase');
+const ResetPasswordUseCase = require('./usecases/Authentication/ResetPasswordUseCase');
 const ServerResponse = require('../../utils/response');
 const EmailService = require('../../services/EmailService');
 
@@ -47,6 +48,21 @@ class AuthController {
 				payload: { 'v:token': link },
 			});
 			ServerResponse.message('link sent successfully').respond(res);
+		} catch (err) {
+			next(err);
+		}
+	}
+
+	async resetPassword(req, res, next) {
+		try {
+			const { token } = req.query;
+			if (!token)
+				return ServerResponse.message('token is requred for this route')
+					.success(false)
+					.statusCode(400)
+					.respond(res);
+			await ResetPasswordUseCase.execute(token, req.body.password);
+			ServerResponse.message('password reset successfully').respond(res);
 		} catch (err) {
 			next(err);
 		}
