@@ -8,6 +8,7 @@ class CreateDhlShipment {
 	async execute(data) {
 		const result = this.#validateShipment.validateShipmentCreation(data);
 		if (result.error) throw new CustomError(result.error.message, 400);
+		console.log(result);
 		const shipmentData = await this.#makeShipmentRequest(result.value);
 		return {
 			trackingId: shipmentData.shipmentTrackingNumber,

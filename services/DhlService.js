@@ -42,6 +42,10 @@ class DhlService {
 			},
 		});
 	}
+
+	async trackShipment(trackingId) {
+		return await this.#httpService.get(`/shipments/${trackingId}/tracking`);
+	}
 }
 
 module.exports = Object.freeze(new DhlService());
