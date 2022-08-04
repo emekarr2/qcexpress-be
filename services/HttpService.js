@@ -1,4 +1,5 @@
 const axios = require('axios');
+const CustomError = require('../errors/error');
 
 module.exports = class HttpService {
 	#axios = axios;
@@ -6,15 +7,18 @@ module.exports = class HttpService {
 	constructor(baseUrl) {
 		this.baseUrl = baseUrl;
 		this.timeout = 20000;
+		this.__error = {
+			message: 'Could not successfully complete request to an external server',
+			useAsDefault: true,
+		};
 	}
 
-	getRequestInstance() {
+	get requestInstance() {
 		const instance = this.#axios.create({
-			baseUrl: this.baseUrl,
+			baseURL: this.baseUrl,
 			timeout: this.timeout,
 			headers: this.headers,
 		});
-
 		instance.interceptors.request.use((config) => {
 			const { url, method, baseURL, data } = config;
 			console.log(
@@ -38,6 +42,13 @@ module.exports = class HttpService {
 
 	setAuthHeader(authData) {
 		this.setHeader({ Authorization: authData });
+		return this;
+	}
+
+	setBasicAuth({ username, password }) {
+		const TOKEN = Buffer.from(username + ':' + password).toString('base64');
+		this.setAuthHeader('Basic ' + TOKEN);
+		return this;
 	}
 
 	onError(errorMsgOrFunction) {
@@ -81,7 +92,7 @@ module.exports = class HttpService {
 			if (typeof this.__error.handler === 'function') {
 				message = this.__error.handler.call(this, message);
 			}
-			throw new HTTPException(message);
+			throw new CustomError(message, 500);
 		}
 	}
 };

@@ -89,7 +89,7 @@ module.exports = class MongoDbRepository {
 		try {
 			result = await new this.model(payload).save();
 		} catch (err) {
-			result = err.message;
+			throw new Error(err);
 		}
 		return result;
 	}

@@ -11,22 +11,29 @@ let BookingSchema = new Schema(
 			enum: ['DOCUMENT', 'PACKAGE'],
 			default: 'PACKAGE',
 		},
-		weight: {
-			type: Number,
-			required: true,
-		},
-		length: {
-			type: Number,
-			required: true,
-		},
-		width: {
-			type: Number,
-			required: true,
-		},
-		height: {
-			type: Number,
-			required: true,
-		},
+		packages: [
+			{
+				description: String,
+				weight: {
+					type: Number,
+					required: true,
+				},
+				dimensions: {
+					length: {
+						type: Number,
+						required: true,
+					},
+					width: {
+						type: Number,
+						required: true,
+					},
+					height: {
+						type: Number,
+						required: true,
+					},
+				},
+			},
+		],
 		description: {
 			type: String,
 		},
@@ -41,21 +48,60 @@ let BookingSchema = new Schema(
 			set: (v) => v * 100,
 		},
 		delivery_info: {
-			full_address: String,
-			city: String,
-			state: String,
-			country: String,
-			post_code: Number,
-			phone: Number,
-			date: Number,
-			name: String,
-			house_number: String,
+			postalAddress: {
+				postalCode: String,
+				cityName: { type: String, required: true },
+				countryCode: {
+					type: String,
+					required: true,
+				},
+				addressLine1: { type: String, required: true },
+				countyName: String,
+			},
+			contactInformation: {
+				phone: { type: String, required: true },
+				companyName: String,
+				fullName: { type: String, required: true },
+				email: String,
+			},
 		},
-		tracking_id: {
-			type: String,
-			required: true,
-			index: true,
-			unique: true,
+		shipmentMeta: {
+			trackingId: {
+				type: String,
+				required: true,
+			},
+			trackingUrl: {
+				type: String,
+				required: true,
+			},
+			packages: [
+				{
+					referenceNumber: {
+						type: Number,
+						required: true,
+					},
+					trackingNumber: {
+						type: String,
+						required: true,
+					},
+					trackingUrl: {
+						type: String,
+						required: true,
+					},
+				},
+			],
+			documents: [
+				{
+					imageFormat: {
+						type: String,
+						required: true,
+					},
+					content: {
+						type: String,
+						required: true,
+					},
+				},
+			],
 		},
 	},
 	{ timestamps: true, toJSON: { getters: true } },
