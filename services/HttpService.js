@@ -13,7 +13,7 @@ module.exports = class HttpService {
 		};
 	}
 
-	get requestInstance() {
+	get requestInstance() { axios.default.get
 		const instance = this.#axios.create({
 			baseURL: this.baseUrl,
 			timeout: this.timeout,
@@ -84,6 +84,7 @@ module.exports = class HttpService {
 			return response.data;
 		} catch (e) {
 			let message = this.__error.message;
+			console.log(e);
 			if (e.response) {
 				if (e.isAxiosError && this.__error.useAsDefault) {
 					message = e.response?.data ?? e.response ?? message;
