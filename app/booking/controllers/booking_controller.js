@@ -13,6 +13,7 @@ class BookingController {
 			data.bookingData.description = data.shipmentData.description;
 			data.bookingData.number_items = data.bookingData.packages.length;
 			data.bookingData.delivery_info = data.shipmentData.receiver;
+			data.bookingData.userId = req.user.userId;
 			const result = await CreateBookingUseCase.execute(
 				data.bookingData,
 				shipmentData,

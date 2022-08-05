@@ -3,6 +3,7 @@ const joi = require('joi');
 exports.validateBooking = (data) =>
 	joi
 		.object({
+			userId: joi.string().required(),
 			category: joi.string().required(),
 			shipment_type: joi.string().default('PACKAGE'),
 			packages: joi.array().items(

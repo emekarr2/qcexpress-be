@@ -1,7 +1,12 @@
-const { model, Schema } = require('mongoose');
+const { model, Schema, Types } = require('mongoose');
 
 let BookingSchema = new Schema(
 	{
+		userId: {
+			type: Types.ObjectId,
+			ref: 'User',
+			required: true,
+		},
 		category: {
 			type: String,
 			required: true,

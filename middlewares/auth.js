@@ -22,6 +22,6 @@ module.exports = async (req, res, next) => {
 	req.user.firstname = result.firstname;
 	req.user.lastname = result.lastname;
 	req.user.verified_email = result.verified_email;
-    req.user.verified_mobile = result.verified_mobile;
-    next()
+	req.user.verified_mobile = result.verified_mobile;
+	next();
 };
