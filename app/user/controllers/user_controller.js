@@ -60,6 +60,11 @@ class UserController {
 	async getUserProfile(req, res, next) {
 		try {
 			const user = await user_repo.findById(req.user.userId);
+			if (!user)
+				return ServerResponse.message('user does not exist')
+					.statusCode(404)
+					.success(false)
+					.respond(res);
 			ServerResponse.message('profile fetched').data(user).respond(res);
 		} catch (err) {
 			next(err);
