@@ -6,13 +6,12 @@ class BookingController {
 	async createBooking(req, res, next) {
 		try {
 			const data = req.body;
-			const shipmentData = await CreateDhlShipmentUseCase.execute(
-				data.shipmentData,
-			);
+			const { shipmentData, contactData } =
+				await CreateDhlShipmentUseCase.execute(data.shipmentData, data.type);
 			data.bookingData.packages = data.shipmentData.packages;
 			data.bookingData.description = data.shipmentData.description;
 			data.bookingData.number_items = data.bookingData.packages.length;
-			data.bookingData.delivery_info = data.shipmentData.receiver;
+			data.bookingData.delivery_info = contactData;
 			data.bookingData.userId = req.user.userId;
 			const result = await CreateBookingUseCase.execute(
 				data.bookingData,

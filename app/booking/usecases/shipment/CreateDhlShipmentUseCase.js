@@ -1,31 +1,39 @@
 const HttpService = require('../../../../services/HttpService');
 const CustomError = require('../../../../errors/error');
 const validateShipment = require('../../validators/shipment_validators');
+const DhlService = require('../../../../services/DhlService');
+const Constants = require('../../../../utils/constants');
 
 class CreateDhlShipment {
 	#validateShipment = validateShipment;
+	#DhlService = DhlService;
 
-	async execute(data) {
+	async execute(data, type) {
 		const result = this.#validateShipment.validateShipmentCreation(data);
 		if (result.error) throw new CustomError(result.error.message, 400);
-		console.log(result);
-		const shipmentData = await this.#makeShipmentRequest(result.value);
+		const { shipmentData, contactData } = await this.#makeShipmentRequest(
+			result.value,
+			type,
+		);
 		return {
-			trackingId: shipmentData.shipmentTrackingNumber,
-			trackingUrl: shipmentData.trackingUrl,
-			packages: shipmentData.packages.map((data) => {
-				return {
-					referenceNumber: data.referenceNumber,
-					trackingNumber: data.trackingNumber,
-					trackingUrl: data.trackingUrl,
-				};
-			}),
-			documents: shipmentData.documents.map((data) => {
-				return {
-					imageFormat: data.imageFormat,
-					content: data.content,
-				};
-			}),
+			shipmentData: {
+				trackingId: shipmentData.shipmentTrackingNumber,
+				trackingUrl: shipmentData.trackingUrl,
+				packages: shipmentData.packages.map((data) => {
+					return {
+						referenceNumber: data.referenceNumber,
+						trackingNumber: data.trackingNumber,
+						trackingUrl: data.trackingUrl,
+					};
+				}),
+				documents: shipmentData.documents.map((data) => {
+					return {
+						imageFormat: data.imageFormat,
+						content: data.content,
+					};
+				}),
+			},
+			contactData,
 		};
 	}
 
@@ -37,59 +45,30 @@ class CreateDhlShipment {
 		});
 	}
 
-	#constructPayload(data) {
-		return {
-			plannedShippingDateAndTime: data.plannedShippingDateAndTime,
-			productCode: 'N',
-			pickup: {
-				isRequested: false,
-			},
-			outputImageProperties: {
-				allDocumentsInOneImage: true,
-				encodingFormat: 'pdf',
-				imageOptions: [
-					{
-						templateName: 'ECOM26_84_A4_001',
-						typeCode: 'label',
-					},
-					{
-						templateName: 'ARCH_8X4_A4_002',
-						isRequested: true,
-						typeCode: 'waybillDoc',
-						hideAccountNumber: true,
-					},
-				],
-			},
-			accounts: [
-				{
-					number: '365022156',
-					typeCode: 'shipper',
-				},
-			],
-			customerDetails: {
-				shipperDetails: {
-					...data.sender,
-					typeCode: 'business',
-				},
-				receiverDetails: {
-					...data.receiver,
-					typeCode: 'business',
-				},
-			},
-			content: {
-				unitOfMeasurement: 'metric',
-				isCustomsDeclarable: false,
-				incoterm: 'DAP',
-				description: data.description,
-				packages: data.packages,
-			},
-		};
+	#constructPayload(data, type) {
+		if (type === Constants.DHL_SHIPMENT_TYPES.DOMESTIC) {
+			return this.#DhlService.fetchDomesticShipmentPayload(data);
+		} else if (type === Constants.DHL_SHIPMENT_TYPES.EXPORT) {
+			return this.#DhlService.fetchExportShipmentPayload(data);
+		} else if (type === Constants.DHL_SHIPMENT_TYPES.IMPORT) {
+			return this.#DhlService.fetchImportShipmentPayload(data);
+		} else {
+			throw new CustomError('invalid shipment type selected', 400);
+		}
 	}
 
-	async #makeShipmentRequest(data) {
+	async #makeShipmentRequest(data, type) {
 		const httpService = this.#setUpHttpService();
-		const payload = this.#constructPayload(data);
-		return await httpService.post('/shipments', payload);
+		const payload = this.#constructPayload(data, type);
+		const contactData = JSON.stringify(payload.customerDetails);
+		delete payload.customerDetails.shipperDetails?.type;
+		delete payload.customerDetails.receiverDetails?.type;
+		delete payload.customerDetails.importerDetails?.type;
+		delete payload.customerDetails.exporterDetails?.type;
+		return {
+			contactData: Object.values(JSON.parse(contactData)),
+			shipmentData: await httpService.post('/shipments', payload),
+		};
 	}
 }
 

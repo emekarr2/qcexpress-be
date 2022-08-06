@@ -20,21 +20,25 @@ exports.validateBooking = (data) =>
 			description: joi.string(),
 			number_items: joi.number().required(),
 			value: joi.number().default(0),
-			delivery_info: joi.object({
-				postalAddress: {
-					postalCode: joi.string(),
-					cityName: joi.string().required(),
-					countryCode: joi.string().length(2).required(),
-					addressLine1: joi.string().required(),
-					countyName: joi.string(),
-				},
-				contactInformation: {
-					phone: joi.string().length(14).required(),
-					companyName: joi.string(),
-					fullName: joi.string().required(),
-					email: joi.string().email(),
-				},
-			}),
+			delivery_info: joi.array().items(
+				joi.object({
+					type: joi.string(),
+					typeCode: joi.string(),
+					postalAddress: {
+						postalCode: joi.string(),
+						cityName: joi.string().required(),
+						countryCode: joi.string().length(2).required(),
+						addressLine1: joi.string().required(),
+						countyName: joi.string(),
+					},
+					contactInformation: {
+						phone: joi.string().length(14).required(),
+						companyName: joi.string(),
+						fullName: joi.string().required(),
+						email: joi.string().email(),
+					},
+				}),
+			),
 			shipmentMeta: joi.object({
 				trackingUrl: joi.string().required(),
 				trackingId: joi.string().required(),

@@ -52,24 +52,30 @@ let BookingSchema = new Schema(
 			get: (v) => (v / 100).toFixed(2),
 			set: (v) => v * 100,
 		},
-		delivery_info: {
-			postalAddress: {
-				postalCode: String,
-				cityName: { type: String, required: true },
-				countryCode: {
+		delivery_info: [
+			{
+				type: {
 					type: String,
 					required: true,
 				},
-				addressLine1: { type: String, required: true },
-				countyName: String,
+				postalAddress: {
+					postalCode: String,
+					cityName: { type: String, required: true },
+					countryCode: {
+						type: String,
+						required: true,
+					},
+					addressLine1: { type: String, required: true },
+					countyName: String,
+				},
+				contactInformation: {
+					phone: { type: String, required: true },
+					companyName: String,
+					fullName: { type: String, required: true },
+					email: String,
+				},
 			},
-			contactInformation: {
-				phone: { type: String, required: true },
-				companyName: String,
-				fullName: { type: String, required: true },
-				email: String,
-			},
-		},
+		],
 		shipmentMeta: {
 			trackingId: {
 				type: String,
