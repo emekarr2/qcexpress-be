@@ -3,7 +3,7 @@ const ServerResponse = require('../../utils/response');
 
 class PriceController {
 	async fetchSingleItemPrice(req, res) {
-		const response = await DhlService.getSingleItemRate(req.query);
+		const response = await DhlService.fetchDomesticRate(req.body);
 		ServerResponse.message('prices fetched').data(response).respond(res);
 	}
 }

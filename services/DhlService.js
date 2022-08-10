@@ -10,37 +10,50 @@ class DhlService {
 		});
 	}
 
-	async getSingleItemRate({
-		cityFrom,
-		cityTo,
+	async fetchDomesticRate({
 		length,
 		width,
 		weight,
 		height,
-		plannedShippingDate,
+		plannedShippingDateAndTime,
 		isCustomsDeclarable = false,
-		destinationCountryCode,
-		originPostalCode,
-		destinationPostalCode,
+		nextBusinessDay,
+		customerDetails,
 	}) {
-		return await this.#httpService.get(`/rates`, {
-			params: {
-				accountNumber: '365022156',
-				originCountryCode: 'CZ',
-				originCityName: cityFrom,
-				destinationCountryCode,
-				destinationCityName: cityTo,
-				originPostalCode,
-				destinationPostalCode,
-				weight,
-				length,
-				width,
-				height,
-				plannedShippingDate,
-				isCustomsDeclarable,
-				unitOfMeasurement: 'metric',
-			},
+		const payload = await this.#httpService.post(`/rates`, {
+			plannedShippingDateAndTime,
+			productCode: 'N',
+			payerCountryCode: 'NG',
+			unitOfMeasurement: 'metric',
+			isCustomsDeclarable,
+			nextBusinessDay,
+			customerDetails,
+			accounts: [
+				{
+					number: process.env.DHL_ACCOUNT_NUMBER,
+					typeCode: 'shipper',
+				},
+			],
+			packages: [
+				{
+					weight,
+					dimensions: {
+						length,
+						width,
+						height,
+					},
+				},
+			],
 		});
+		return {
+			exchangeRates: payload.exchangeRates,
+			products: payload.products.map((p) => {
+				return {
+					weight: p.weight,
+					totalPrice: p.totalPrice,
+				};
+			}),
+		};
 	}
 
 	async trackShipment(trackingId) {
@@ -72,7 +85,7 @@ class DhlService {
 			},
 			accounts: [
 				{
-					number: '365022156',
+					number: process.env.DHL_ACCOUNT_NUMBER,
 					typeCode: 'shipper',
 				},
 			],
