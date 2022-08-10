@@ -19,15 +19,18 @@ class DhlService {
 		isCustomsDeclarable = false,
 		nextBusinessDay,
 		customerDetails,
+		monetaryAmount,
+		productCode = 'N',
 	}) {
 		const payload = await this.#httpService.post(`/rates`, {
 			plannedShippingDateAndTime,
-			productCode: 'N',
+			productCode,
 			payerCountryCode: 'NG',
 			unitOfMeasurement: 'metric',
 			isCustomsDeclarable,
 			nextBusinessDay,
 			customerDetails,
+			monetaryAmount,
 			accounts: [
 				{
 					number: process.env.DHL_ACCOUNT_NUMBER,
