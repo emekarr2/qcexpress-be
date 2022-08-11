@@ -124,14 +124,38 @@ class DhlService {
 			...baseData.customerDetails.receiverDetails,
 			type: 'IMPORT',
 		};
+		baseData.content = {
+			...baseData.content,
+			isCustomsDeclarable: true,
+			exportDeclaration: data.exportDeclaration,
+		};
+		baseData.productCode = 'P';
+		baseData.outputImageProperties.imageOptions.push({
+			templateName: 'COMMERCIAL_INVOICE_P_10',
+			invoiceType: 'proforma',
+			languageCode: 'eng',
+			isRequested: true,
+			typeCode: 'invoice',
+		});
 		return baseData;
 	}
 
 	fetchExportShipmentPayload(data) {
 		const baseData = this.#fetchShipmentBasePayload(data);
-		baseData.customerDetails.exporterDetails = {
-			...baseData.customerDetails.shipperDetails,
-			type: 'EXPORT',
+		baseData.productCode = 'P';
+		baseData.outputImageProperties.imageOptions.push({
+			templateName: 'COMMERCIAL_INVOICE_P_10',
+			invoiceType: 'proforma',
+			languageCode: 'eng',
+			isRequested: true,
+			typeCode: 'invoice',
+		});
+		baseData.content = {
+			...baseData.content,
+			exportDeclaration: data.exportDeclaration,
+			isCustomsDeclarable: true,
+			declaredValueCurrency: 'NGN',
+			declaredValue: data.declaredValue,
 		};
 		return baseData;
 	}

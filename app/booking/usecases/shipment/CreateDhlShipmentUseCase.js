@@ -8,7 +8,11 @@ class CreateDhlShipment {
 	#validateShipment = validateShipment;
 	#DhlService = DhlService;
 
-	async execute(data, type) {
+	async execute(data, type, international) {
+		if (type !== 'DOMESTIC') {
+			data.exportDeclaration = international.exportDeclaration;
+		}
+		console.log(data.sender);
 		const result = this.#validateShipment.validateShipmentCreation(data);
 		if (result.error) throw new CustomError(result.error.message, 400);
 		const { shipmentData, contactData } = await this.#makeShipmentRequest(

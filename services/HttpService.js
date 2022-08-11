@@ -84,7 +84,7 @@ module.exports = class HttpService {
 			return response.data;
 		} catch (e) {
 			let message = this.__error.message;
-			console.log(e);
+			// console.log(e);
 			if (e.response) {
 				if (e.isAxiosError && this.__error.useAsDefault) {
 					message = e.response?.data ?? e.response ?? message;

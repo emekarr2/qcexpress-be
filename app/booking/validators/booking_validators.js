@@ -25,14 +25,14 @@ exports.validateBooking = (data) =>
 					type: joi.string(),
 					typeCode: joi.string(),
 					postalAddress: {
-						postalCode: joi.string(),
+						postalCode: joi.any(),
 						cityName: joi.string().required(),
 						countryCode: joi.string().length(2).required(),
 						addressLine1: joi.string().required(),
 						countyName: joi.string(),
 					},
 					contactInformation: {
-						phone: joi.string().length(14).required(),
+						phone: joi.string().required(),
 						companyName: joi.string(),
 						fullName: joi.string().required(),
 						email: joi.string().email(),

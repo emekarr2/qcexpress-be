@@ -7,7 +7,11 @@ class BookingController {
 		try {
 			const data = req.body;
 			const { shipmentData, contactData } =
-				await CreateDhlShipmentUseCase.execute(data.shipmentData, data.type);
+				await CreateDhlShipmentUseCase.execute(
+					data.shipmentData,
+					data.type,
+					data.international,
+				);
 			data.bookingData.packages = data.shipmentData.packages;
 			data.bookingData.description = data.shipmentData.description;
 			data.bookingData.number_items = data.bookingData.packages.length;
