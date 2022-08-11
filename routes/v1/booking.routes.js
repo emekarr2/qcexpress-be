@@ -6,4 +6,6 @@ const router = Router();
 
 router.post('/create', auth_middleware, BookingController.createBooking);
 
+router.get('/download-docs', BookingController.downloadDocs);
+
 module.exports = router;
