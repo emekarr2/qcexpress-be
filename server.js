@@ -1,64 +1,60 @@
-const express = require('express')
-const cors = require('cors')
-const bodyParser = require('body-parser')
-const mongoose = require('mongoose')
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const bodyParser = require('body-parser');
+const err_middleware = require('./middlewares/error');
 require('dotenv').config();
+// start services
+require('./startups/index');
+const routes = require('./routes');
+const ServerResponse = require('./utils/response');
 
 // Express APIs
-const api = require('./routes/auth.routes')
-const booking = require('./routes/booking.routes')
-const emailsend= require('./routes/email.routes')
-const serviceupdate= require('./routes/service.routes')
-const price= require('./routes/prices.routes')
-
-mongoose
-  .connect(`mongodb+srv://${process.env.SQL_DB_NAME}:${process.env.SQL_PASSWORD}@cluster0.9zbdr.mongodb.net/qc-app?retryWrites=true&w=majority`)
-  .then((x) => {
-    console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`)
-  })
-  .catch((err) => {
-    console.error('Error connecting to mongo', err.reason)
-  })
+// const api = require('./routes/auth.routes');
+// const booking = require('./routes/booking.routes');
+// const emailsend = require('./routes/email.routes');
+// const serviceupdate = require('./routes/service.routes');
+// const price = require('./routes/prices.routes');
 
 // Express settings
-const app = express()
-app.use(bodyParser.json())
+const app = express();
+app.use(bodyParser.json());
 app.use(
-  bodyParser.urlencoded({
-    extended: false,
-  }),
-)
-app.use(cors())
+	bodyParser.urlencoded({
+		extended: false,
+	}),
+);
+
+app.use(
+	cors({
+		origin: ['http://localhost:3000', process.env.CLIENT_URL],
+		credentials: true,
+	}),
+);
+
+app.use(helmet());
 
 // Serve static resources
-app.use('/public', express.static('public'))
-app.use('/api', api)
-app.use('/api/book/', booking)
-app.use('/api/email/', emailsend)
-app.use('/api/service-update/', serviceupdate)
-app.use('/api/getprice/', price)
+app.use('/public', express.static('public'));
+// app.use('/api', api);
+// app.use('/api/book/', booking);
+// app.use('/api/email/', emailsend);
+// app.use('/api/service-update/', serviceupdate);
+// app.use('/api/getprice/', price);
 
+app.use('/api', routes);
 
+app.use('*', (req, res) => {
+	ServerResponse.message(
+		`the route ${req.method} ${req.originalUrl} does not exist`,
+	)
+		.success(false)
+		.statusCode(404)
+		.respond(res);
+});
 
+const server = app.listen(process.env.PORT, () => {
+	console.log('Connected to port ' + process.env.PORT);
+});
 
-
-// Define PORT
-const port = process.env.PORT || 4000
-
-const server = app.listen(port, () => {
-  console.log('Connected to port ' + port)
-})
-
-// Express error handling
-// app.use((req, res, next) => {
-//     setImmediate(() => {
-//       next(new Error('Something went wrong'))
-//     })  
- 
-// })
-
-app.use(function (err, req, res, next) {
-  console.error(err.message)
-  if (!err.statusCode) err.statusCode = 500
-  res.status(err.statusCode).send(err.message)
-})
+app.use(err_middleware);

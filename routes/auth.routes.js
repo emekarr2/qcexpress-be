@@ -64,11 +64,6 @@ router.post("/verify_token", (req, res, next) => {
         } else {
           mg.messages()
             .send({
-              from: process.env.MAIL_SENDER_EMAIL,
-              to: email,
-              subject: "Verify OTP",
-              template: "otp_verify",
-              "v:token": token,
             })
             .then((response) => {
               console.log(response);
