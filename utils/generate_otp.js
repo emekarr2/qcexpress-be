@@ -1,1 +1,1 @@
-module.exports = () => Math.floor(100000 + Math.random() * 899999).toString();
+module.exports = () => Math.floor(1000 + Math.random() * 8999).toString();
