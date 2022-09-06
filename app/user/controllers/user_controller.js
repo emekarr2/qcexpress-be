@@ -27,7 +27,9 @@ class UserController {
 				template: 'otp_verify',
 				payload: { 'v:token': code },
 			});
-			ServerResponse.message('user created successfully').respond(res);
+			ServerResponse.message('user created successfully')
+				.statusCode(201)
+				.respond(res);
 		} catch (err) {
 			next(err);
 		}
