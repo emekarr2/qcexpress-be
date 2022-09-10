@@ -39,7 +39,9 @@ class UserController {
 		try {
 			const data = req.body;
 			await VerifyUserUseCase.execute(data);
-			ServerResponse.message('email verified successfully').respond(res);
+			ServerResponse.message('email verified successfully')
+				.statusCode(200)
+				.respond(res);
 		} catch (err) {
 			next(err);
 		}
@@ -53,7 +55,9 @@ class UserController {
 					.success(false)
 					.statusCode(404)
 					.respond(res);
-			ServerResponse.message('user deleted successfully').respond(res);
+			ServerResponse.message('user deleted successfully')
+				.statusCode(200)
+				.respond(res);
 		} catch (err) {
 			next(err);
 		}
@@ -67,7 +71,10 @@ class UserController {
 					.statusCode(404)
 					.success(false)
 					.respond(res);
-			ServerResponse.message('profile fetched').data(user).respond(res);
+			ServerResponse.message('profile fetched')
+				.statusCode(200)
+				.data(user)
+				.respond(res);
 		} catch (err) {
 			next(err);
 		}
@@ -90,7 +97,10 @@ class UserController {
 					.success(false)
 					.respond(res);
 			const updated = await UpdateUserUseCase.execute(req.user.userId, payload);
-			ServerResponse.message('profile updated').data(updated).respond(res);
+			ServerResponse.message('profile updated')
+				.statusCode(200)
+				.data(updated)
+				.respond(res);
 		} catch (err) {
 			next(err);
 		}

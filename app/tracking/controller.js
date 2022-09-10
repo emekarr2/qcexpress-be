@@ -10,7 +10,10 @@ class TrackingController {
 				.statusCode(400)
 				.respond(res);
 		const response = await DhlService.trackShipment(id);
-		ServerResponse.message('tracking data fetched').data(response).respond(res);
+		ServerResponse.message('tracking data fetched')
+			.statusCode(200)
+			.data(response)
+			.respond(res);
 	}
 }
 

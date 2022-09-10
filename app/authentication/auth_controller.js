@@ -23,7 +23,9 @@ class AuthController {
 				template: 'otp_verify',
 				payload: { 'v:token': code },
 			});
-			ServerResponse.message('otp sent successfully').respond(res);
+			ServerResponse.message('otp sent successfully')
+				.statusCode(200)
+				.respond(res);
 		} catch (err) {
 			next(err);
 		}
@@ -35,6 +37,7 @@ class AuthController {
 			const tokens = await LoginUserUseCase.execute(data);
 			ServerResponse.message('user logged in successfully')
 				.data(tokens)
+				.statusCode(200)
 				.respond(res);
 		} catch (err) {
 			next(err);
@@ -45,7 +48,6 @@ class AuthController {
 		try {
 			const { email } = req.body;
 			const link = await GeneratePasswordResetLinkUseCase.execute(email);
-			console.log(link);
 			await EmailService.send({
 				from: process.env.MAIL_SENDER_EMAIL,
 				to: email,
@@ -53,7 +55,9 @@ class AuthController {
 				template: 'forgot',
 				payload: { 'v:token': link },
 			});
-			ServerResponse.message('link sent successfully').respond(res);
+			ServerResponse.message('link sent successfully')
+				.statusCode(200)
+				.respond(res);
 		} catch (err) {
 			next(err);
 		}
@@ -68,7 +72,9 @@ class AuthController {
 					.statusCode(400)
 					.respond(res);
 			await ResetPasswordUseCase.execute(token, req.body.password);
-			ServerResponse.message('password reset successfully').respond(res);
+			ServerResponse.message('password reset successfully')
+				.statusCode(200)
+				.respond(res);
 		} catch (err) {
 			next(err);
 		}
@@ -90,6 +96,7 @@ class AuthController {
 			);
 			ServerResponse.message('token generated successfully')
 				.data({ access_token })
+				.statusCode(201)
 				.respond(res);
 		} catch (err) {
 			next(err);
