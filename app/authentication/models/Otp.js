@@ -16,6 +16,6 @@ const OtpSchema = new Schema(
 	{ timestamps: true },
 );
 
-OtpSchema.index({ createdAt: 1 }, { expires: '120s' });
+OtpSchema.index({ createdAt: 1 }, { expires: '300s' });
 
 module.exports = model('Otp', OtpSchema);
