@@ -13,6 +13,17 @@ class ServerResponse {
 			data: this.data || null,
 			success: this.success || false,
 		};
+		console.log({
+			statusCode: status_code,
+			payload: {
+				...this.payload,
+				data: {
+					...this.payload.data,
+					access_token: null,
+					refresh_tokens: null,
+				},
+			},
+		});
 		res.status(status_code).json(this.payload);
 	}
 }
