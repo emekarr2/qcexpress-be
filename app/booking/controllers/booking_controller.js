@@ -23,7 +23,11 @@ class BookingController {
 				data.bookingData,
 				shipmentData,
 			);
-			ServerResponse.message('success').success(true).data(result).respond(res);
+			ServerResponse.message('success')
+				.success(true)
+				.statusCode(200)
+				.data(result)
+				.respond(res);
 		} catch (err) {
 			next(err);
 		}
@@ -43,6 +47,7 @@ class BookingController {
 			);
 			ServerResponse.message('download successful')
 				.success(true)
+				.statusCode(200)
 				.data(Buffer.from(new Uint8Array(ab)))
 				.respond(res);
 		} catch (err) {
