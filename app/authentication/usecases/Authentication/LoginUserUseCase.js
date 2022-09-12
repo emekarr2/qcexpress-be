@@ -57,6 +57,7 @@ class LoginUserUseCase {
 		return {
 			access_token,
 			refresh_tokens,
+			user,
 		};
 	}
 
