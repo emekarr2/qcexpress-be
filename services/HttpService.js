@@ -13,7 +13,8 @@ module.exports = class HttpService {
 		};
 	}
 
-	get requestInstance() { axios.default.get
+	get requestInstance() {
+		axios.default.get;
 		const instance = this.#axios.create({
 			baseURL: this.baseUrl,
 			timeout: this.timeout,
@@ -93,6 +94,7 @@ module.exports = class HttpService {
 			if (typeof this.__error.handler === 'function') {
 				message = this.__error.handler.call(this, message);
 			}
+			console.log(message);
 			throw new CustomError(message, 500);
 		}
 	}
