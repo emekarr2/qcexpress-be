@@ -53,8 +53,8 @@ app.use('*', (req, res) => {
 		.respond(res);
 });
 
+app.use(err_middleware);
+
 const server = app.listen(process.env.PORT, () => {
 	console.log('Connected to port ' + process.env.PORT);
 });
-
-app.use(err_middleware);
