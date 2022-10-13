@@ -68,7 +68,7 @@ class DhlService {
 			plannedShippingDateAndTime: data.plannedShippingDateAndTime,
 			productCode: 'N',
 			pickup: {
-				isRequested: false,
+				isRequested: process.env.NODE_ENV === 'production',
 			},
 			outputImageProperties: {
 				allDocumentsInOneImage: true,
