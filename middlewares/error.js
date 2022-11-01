@@ -29,4 +29,5 @@ module.exports = (err, req, res, next) => {
 			.statusCode(500)
 			.respond(res);
 	}
+	next()
 };
