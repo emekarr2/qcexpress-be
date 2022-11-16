@@ -20,6 +20,6 @@ module.exports = (amount, document, weight, destination, deliveryType) => {
   if (!charge) throw new CustomError(`unsupported weight size selected`, 401);
   const markup = (charge.charge * amount) / 100;
   const markupVat = (markup * vat) / 100;
-  const price = amount + markupVat;
+  const price = amount + markupVat + markup;
   return price;
 };
