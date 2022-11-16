@@ -19,7 +19,7 @@ class PriceController {
       );
       ServerResponse.message("prices fetched")
         .statusCode(200)
-        .data(price)
+        .data(price.toFixed(2))
         .respond(res);
     } catch (err) {
       next(err);
