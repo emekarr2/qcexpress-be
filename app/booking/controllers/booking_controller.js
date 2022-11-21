@@ -3,6 +3,8 @@ const CreateBookingUseCase = require('../usecases/booking/CreateBookingUseCase')
 const ServerResponse = require('../../../utils/response');
 const FileManager = require('../../../services/FileManager');
 const bookingRepository = require('../repository/booking_repo');
+// services
+const EmailService = require('../../../services/EmailService');
 
 class BookingController {
 	async createBooking(req, res, next) {
@@ -23,6 +25,20 @@ class BookingController {
 				data.bookingData,
 				shipmentData,
 			);
+			const ab = FileManager.base64ToArrayBuffer(
+				result.shipmentMeta.documents[0].content,
+			)
+			await EmailService.send({
+				from: process.env.MAIL_SENDER_EMAIL,
+				to: req.user.email,
+				subject: 'Your booking was successful',
+				template: 'booking',
+				payload: { 
+					"v:name": `${req.user.firstname} ${req.user.lastname}`,
+					"v:tracking": result.shipmentMeta.trackingId,
+					attachment: Buffer.from(new Uint8Array(ab))
+			   },
+			});
 			ServerResponse.message('success')
 				.success(true)
 				.statusCode(200)
