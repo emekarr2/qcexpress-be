@@ -5,7 +5,10 @@ const CustomError = require("../errors/error");
 
 module.exports = (amount, document, weight, destination, deliveryType) => {
   if (destination === "NG" || deliveryType === "domestic") {
-    return amount;
+    const markup = (30 * amount) / 100;
+    const markupVat = (markup * vat) / 100;
+    const price = amount + markupVat + markup;
+    return price
   }
   const zone = zones.find(
     (z) =>
