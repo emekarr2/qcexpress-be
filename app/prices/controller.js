@@ -10,12 +10,16 @@ class PriceController {
       delete req.body.document;
       delete req.body.deliveryType;
       const dhlPrice = await DhlService.fetchDomesticRate(req.body);
-      const price = TaxCal(
+      const price = await TaxCal(
         dhlPrice.products[0].totalPrice[0].price,
         document,
         req.body.weight,
         req.body.customerDetails.receiverDetails.countryCode,
-        deliveryType
+        deliveryType,
+        req.body.customerDetails.shipperDetails.countyName,
+        req.body.customerDetails.receiverDetails.countyName,
+        req.body.customerDetails.shipperDetails.cityName,
+        req.body.customerDetails.receiverDetails.cityName
       );
       ServerResponse.message("prices fetched")
         .statusCode(200)
