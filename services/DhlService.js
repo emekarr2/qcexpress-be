@@ -128,6 +128,8 @@ class DhlService {
 			...baseData.content,
 			isCustomsDeclarable: true,
 			exportDeclaration: data.exportDeclaration,
+			declaredValueCurrency: 'NGN',
+			declaredValue: data.declaredValue,
 		};
 		baseData.productCode = 'P';
 		baseData.outputImageProperties.imageOptions.push({

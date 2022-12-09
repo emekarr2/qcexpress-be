@@ -94,7 +94,7 @@ module.exports = class HttpService {
 			if (typeof this.__error.handler === 'function') {
 				message = this.__error.handler.call(this, message);
 			}
-			console.log(message);
+			// console.log(message);
 			throw new CustomError(message, 500);
 		}
 	}
