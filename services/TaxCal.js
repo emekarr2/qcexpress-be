@@ -17,33 +17,47 @@ module.exports = async (
   cityTo
 ) => {
   if (destination === "NG" || deliveryType === "domestic") {
-    console.log("the weight");
-    console.log(weight);
-    if (weight > 70 || weight < 0.5) {
-      throw new CustomError(`unsupported weight size selected`, 401);
-    }
     await RegionService.searchCities(countyFrom, cityFrom);
     await RegionService.searchCities(countyTo, cityTo);
     let markUpPerc;
+    // zone D
     if (
-      domesticZones[countyFrom] === domesticZones[countyTo] &&
+      domesticZones[countyFrom.toLowerCase()] !==
+        domesticZones[countyTo.toLowerCase()] &&
       countyFrom.toLowerCase() != "lagos" &&
       countyTo.toLowerCase() != "lagos"
     ) {
-      markUpPerc = 30;
-    }
-    if (
-      countyFrom.toLowerCase() === "lagos" ||
-      countyTo.toLowerCase() === "lagos"
+      const charge = zone_rates[deliveryType]["zoneD"][document].find(
+        (c) => weight >= c.min && weight <= c.max
+      );
+      markUpPerc = charge.charge;
+    } else if (countyFrom.toLowerCase() === countyTo.toLowerCase()) {
+      // zone A
+      const charge = zone_rates[deliveryType]["zoneA"][document].find(
+        (c) => weight >= c.min && weight <= c.max
+      );
+      markUpPerc = charge.charge;
+    } else if (
+      domesticZones[countyFrom.toLowerCase()] ===
+      domesticZones[countyTo.toLowerCase()]
     ) {
-      markUpPerc = 30;
-    }
-    if (
-      domesticZones[countyFrom] !== domesticZones[countyTo] &&
-      countyFrom.toLowerCase() != "lagos" &&
-      countyTo.toLowerCase() != "lagos"
+      // zone B
+      const charge = zone_rates[deliveryType]["zoneB"][document].find(
+        (c) => weight >= c.min && weight <= c.max
+      );
+      markUpPerc = charge.charge;
+      console.log(markUpPerc);
+    } else if (
+      (countyFrom.toLowerCase() === "lagos" &&
+        domesticZones[countyTo] !== "south_west") ||
+      (countyTo.toLowerCase() === "lagos" &&
+        domesticZones[countyFrom] !== "south_west")
     ) {
-      markUpPerc = 25;
+      // zone C
+      const charge = zone_rates[deliveryType]["zoneC"][document].find(
+        (c) => weight >= c.min && weight <= c.max
+      );
+      markUpPerc = charge.charge;
     }
     const markup = (markUpPerc * amount) / 100;
     const markupVat = (markup * vat) / 100;
