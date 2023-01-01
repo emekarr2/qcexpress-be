@@ -16,7 +16,7 @@ module.exports = async (
   cityFrom,
   cityTo
 ) => {
-  if (destination === "NG" || deliveryType === "domestic") {
+  if (destination === "NG" && deliveryType === "domestic") {
     await RegionService.searchCities(countyFrom, cityFrom);
     await RegionService.searchCities(countyTo, cityTo);
     let markUpPerc;
