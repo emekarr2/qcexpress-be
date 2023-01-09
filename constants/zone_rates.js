@@ -5,24 +5,14 @@ module.exports = {
         {
           min: 0.5,
           max: 2.0,
-          charge: 40.0,
+          charge: 30.0,
         },
       ],
       non_document: [
         {
           min: 0.5,
-          max: 2.5,
-          charge: 35.0,
-        },
-        {
-          min: 3.0,
-          max: 19.5,
-          charge: 28.0,
-        },
-        {
-          min: 20.0,
           max: 70.0,
-          charge: 15.0,
+          charge: 23.0,
         },
       ],
     },
