@@ -14,7 +14,7 @@ class RegionService {
       throw new CustomError(`County '${state}' does not exist in Nigeria`, 404);
     const cities = foundState.lgas;
     const cityExists = cities.find((lga) => {
-      return lga === cityName;
+      return lga.toLowerCase().includes(cityName.toLowerCase());
     });
     if (!cityExists)
       throw new CustomError(
