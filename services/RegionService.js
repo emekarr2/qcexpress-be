@@ -1,17 +1,20 @@
 const CustomError = require("../errors/error");
 const HttpService = require("./HttpService");
+const states = require("./NGRegions");
 
 class RegionService {
   constructor() {
-    this.HttpService = new HttpService("https://locus.fkkas.com/api/regions");
+    this.states = states;
   }
-  async searchCities(state, cityName) {
-    const citiesResult = await this.HttpService.get(`/${state}`);
-    const cities = citiesResult.data;
-    if (!cities)
+  searchCities(state, cityName) {
+    const foundState = this.states.find((s) => {
+      return s.state.toLowerCase() === state.toLowerCase();
+    });
+    if (!foundState)
       throw new CustomError(`County '${state}' does not exist in Nigeria`, 404);
-    const cityExists = cities.find((city) => {
-      return city.name === cityName;
+    const cities = foundState.lgas;
+    const cityExists = cities.find((lga) => {
+      return lga === cityName;
     });
     if (!cityExists)
       throw new CustomError(
