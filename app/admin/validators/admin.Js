@@ -1,12 +1,12 @@
 const Joi = require("joi");
-const { joiPasswordExtendCore } = require("joi-password");
-const JoiPassword = Joi.extend(joiPasswordExtendCore);
+const { joiPassword } = require("joi-password");
+// const JoiPassword = Joi.extend(joiPassword);
 
-export const validateNewAdminPayload = (payload) =>
+exports.validateNewAdminPayload = (payload) =>
   Joi.object({
     name: Joi.string().max(50).required(),
     email: Joi.string().email().max(100).required(),
-    password: JoiPassword.string()
+    password: joiPassword.string()
       .min(6)
       .minOfSpecialCharacters(1)
       .minOfLowercase(1)

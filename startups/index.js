@@ -1,4 +1,11 @@
-const mongodb = require('./mongodb');
+const mongodb = require("./mongodb");
 
-// databases
-mongodb.connect();
+module.exports = () => {
+  // databases
+  mongodb.connect();
+
+  // seed database
+  import("./seeder.js").then((seeder) => {
+    seeder.default();
+  });
+};

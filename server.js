@@ -6,7 +6,7 @@ const err_middleware = require("./middlewares/error");
 require("dotenv").config();
 const rateLimit = require("express-rate-limit");
 // start services
-require("./startups/index");
+require("./startups/index")();
 const routes = require("./routes");
 const ServerResponse = require("./utils/response");
 
