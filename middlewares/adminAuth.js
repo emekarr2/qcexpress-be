@@ -30,8 +30,8 @@ module.exports = async (req, res, next) => {
         .respond(res);
     req.admin = {};
     req.admin.email = result.email;
-    req.admin.id = result.id;
-    req.admin.name = result.name;
+    req.admin.id = result.userId;
+    req.admin.name = result.username;
     next();
   } catch (err) {
     next(new CustomError("access denied", 403));
