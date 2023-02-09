@@ -10,4 +10,6 @@ router.delete("/delete", adminAuth(false), ZoneRateController.deleteZoneRate);
 
 router.put("/update", adminAuth(false), ZoneRateController.updateZoneRate);
 
+router.get("/fetch", adminAuth(false), ZoneRateController.fetchZoneRate);
+
 module.exports = router;

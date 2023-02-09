@@ -51,6 +51,18 @@ class ZoneRateController {
       next(err);
     }
   }
+
+  async fetchZoneRate(req, res, next) {
+    try {
+      const data = await zone_rate_repo.model.find({});
+      ServerResponse.message("zone rate fetched")
+        .data(data)
+        .statusCode(200)
+        .respond(res);
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 module.exports = Object.freeze(new ZoneRateController());
