@@ -6,4 +6,6 @@ const router = Router();
 
 router.post("/create", adminAuth(false), ZoneRateController.createZoneRate);
 
+router.delete("/delete", adminAuth(false), ZoneRateController.deleteZoneRate);
+
 module.exports = router;
