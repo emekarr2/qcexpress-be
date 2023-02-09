@@ -17,9 +17,6 @@ class CreateAdminUseCase {
       email: result.value.email,
     });
     if (adminExists != 0) return new CustomError("email is already in use", 409)
-    result.value.password = await this.hasher.hashPassword(
-      result.value.password
-    );
     const admin = await this.adminRepo.createEntry(result.value);
     if (admin == null) {
       throw new CustomError("could not create new admin", 500);

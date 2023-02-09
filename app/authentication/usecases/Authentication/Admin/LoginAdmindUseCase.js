@@ -17,18 +17,18 @@ class LoginAdminUseCase {
     this.#__rejectOnAdminDoesNotExist(admin);
     const success = await this.#hasher.verifyPassword(
       data.password,
-      admin.password
+      admin.password,
     );
     if (!success) throw new CustomError("incorrect password", 403);
     const access_token = await this.#tokens.generateAccessToken(
-      user.email,
-      user.id,
-      user.name
+      admin.email,
+      admin.id,
+      admin.name
     );
     const refresh_tokens = await this.#tokens.generateRefreshToken(
-      user.email,
-      user.id,
-      user.name
+      admin.email,
+      admin.id,
+      admin.name
     );
     return {
       access_token,

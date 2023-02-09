@@ -6,4 +6,6 @@ const router = Router();
 
 router.post("/create", adminAuth, AdminController.createAdmin);
 
+router.get("/login", AdminController.loginAdmin);
+
 module.exports = router;
