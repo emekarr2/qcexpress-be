@@ -2,7 +2,7 @@ const CreateAdminUseCase = require("../app/admin/usecases/CreateAdminUseCase");
 const adminRepo = require("../app/admin/repository/admin_repo");
 
 const createSuperAdmin = async () => {
-  const admin = await adminRepo.findAll();
+  const admin = await adminRepo.count({});
   if (admin.length === 0) {
     await CreateAdminUseCase.execute({
       name: "superadmin",

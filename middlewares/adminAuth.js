@@ -21,7 +21,7 @@ module.exports = async (req, res, next) => {
         .statusCode(403)
         .respond(res);
     const adminExsists = await admin_repo.count({
-      id: result.id,
+      _id: result.userId,
     });
     if (adminExsists !== 1)
       return ServerResponse.message("admin no longer exists")

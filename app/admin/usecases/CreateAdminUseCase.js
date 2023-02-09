@@ -16,7 +16,13 @@ class CreateAdminUseCase {
     const adminExists = await this.adminRepo.count({
       email: result.value.email,
     });
-    if (adminExists != 0) return new CustomError("email is already in use", 409)
+    if (adminExists !== 0) throw new CustomError("email is already in use", 409);
+    const superAdminExists = await this.adminRepo.count({
+      name: "superadmin",
+    });
+    if (superAdminExists === 1 && payload.name === "superadmin") {
+      throw new CustomError("name cannot be superadmin", 409);
+    }
     const admin = await this.adminRepo.createEntry(result.value);
     if (admin == null) {
       throw new CustomError("could not create new admin", 500);
