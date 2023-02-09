@@ -4,7 +4,7 @@ const adminAuth = require("../../middlewares/adminAuth");
 
 const router = Router();
 
-router.post("/create", adminAuth, AdminController.createAdmin);
+router.post("/create", adminAuth(false), AdminController.createAdmin);
 
 router.get("/login", AdminController.loginAdmin);
 
