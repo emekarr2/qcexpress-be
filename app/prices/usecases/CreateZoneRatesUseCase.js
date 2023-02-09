@@ -1,10 +1,11 @@
 const zoneRateValidator = require("../validators/zoneRateValidators");
 const CustomError = require("../../../errors/error");
-const zoneR
+const zoneRateRepo = require("../repository/zone_rate_repo");
 
 class CreateZoneRatesUseCase {
   constructor() {
     this.zoneRateValidator = zoneRateValidator;
+    this.zoneRateRepo = zoneRateRepo;
   }
 
   async execute(payload) {
@@ -12,7 +13,10 @@ class CreateZoneRatesUseCase {
     if (result.error) {
       throw new CustomError(result.error.message, 400);
     }
-
+    if (payload.min >= payload.max) {
+      throw new CustomError("min cannot be greater or equal to max", 400);
+    }
+    return await this.zoneRateRepo.createEntry(result.value);
   }
 }
 

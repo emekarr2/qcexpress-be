@@ -1,8 +1,8 @@
 const Joi = require("joi");
 
-module.exports = (data) =>
+exports.validateCreateNewZoneRate = (data) =>
   Joi.object({
-    type: Joi.string().allow("export", "import", "domestic").required(),
+    type: Joi.string().valid("export", "import", "domestic").required(),
     zone: Joi.string().required(),
     document: Joi.bool().required(),
     min: Joi.number().positive().required(),
