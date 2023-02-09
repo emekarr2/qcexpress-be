@@ -1,9 +1,9 @@
 const vat = require("../constants/vat");
-const zone_rates = require("../constants/zone_rates");
 const zones = require("../constants/zones");
-const CustomError = require("../errors/error");
 const RegionService = require("./RegionService");
 const domesticZones = require("../constants/domestic_zones");
+const zonerateRepo = require("../app/prices/repository/zone_rate_repo");
+const CustomError = require("../errors/error");
 
 module.exports = async (
   amount,
@@ -27,26 +27,31 @@ module.exports = async (
       countyFrom.toLowerCase() != "lagos" &&
       countyTo.toLowerCase() != "lagos"
     ) {
-      const charge = zone_rates[deliveryType]["zoneD"][document].find(
-        (c) => weight >= c.min && weight <= c.max
+      markUpPerc = await fetchZoneRate(
+        deliveryType,
+        "zoneD",
+        document === "document",
+        weight
       );
-      markUpPerc = charge.charge;
     } else if (countyFrom.toLowerCase() === countyTo.toLowerCase()) {
       // zone A
-      const charge = zone_rates[deliveryType]["zoneA"][document].find(
-        (c) => weight >= c.min && weight <= c.max
+      markUpPerc = await fetchZoneRate(
+        deliveryType,
+        "zoneA",
+        document === "document",
+        weight
       );
-      markUpPerc = charge.charge;
     } else if (
       domesticZones[countyFrom.toLowerCase()] ===
       domesticZones[countyTo.toLowerCase()]
     ) {
       // zone B
-      const charge = zone_rates[deliveryType]["zoneB"][document].find(
-        (c) => weight >= c.min && weight <= c.max
+      markUpPerc = await fetchZoneRate(
+        deliveryType,
+        "zoneB",
+        document === "document",
+        weight
       );
-      markUpPerc = charge.charge;
-      console.log(markUpPerc);
     } else if (
       (countyFrom.toLowerCase() === "lagos" &&
         domesticZones[countyTo] !== "south_west") ||
@@ -54,10 +59,12 @@ module.exports = async (
         domesticZones[countyFrom] !== "south_west")
     ) {
       // zone C
-      const charge = zone_rates[deliveryType]["zoneC"][document].find(
-        (c) => weight >= c.min && weight <= c.max
+      markUpPerc = await fetchZoneRate(
+        deliveryType,
+        "zoneC",
+        document === "document",
+        weight
       );
-      markUpPerc = charge.charge;
     }
     const markup = (markUpPerc * amount) / 100;
     const markupVat = (markup * vat) / 100;
@@ -71,12 +78,35 @@ module.exports = async (
         z.Country.lastIndexOf(")")
       ) === destination
   );
-  const charge = zone_rates[deliveryType][zone.Zone][document].find(
-    (c) => weight >= c.min && weight <= c.max
-  );
-  if (!charge) throw new CustomError(`unsupported weight size selected`, 401);
-  const markup = (charge.charge * amount) / 100;
+  const markup =
+    ((await fetchZoneRate(
+      deliveryType,
+      zone.Zone,
+      document === "document",
+      weight
+    )) *
+      amount) /
+    100;
   const markupVat = (markup * vat) / 100;
   const price = amount + markupVat + markup;
   return price;
+};
+
+const fetchZoneRate = async (type, zone, document, weight) => {
+  console.log("heree");
+  console.log(weight);
+  const rate = await zonerateRepo.findOneByFields({
+    type,
+    zone,
+    document,
+    min: {
+      $lte: weight,
+    },
+    max: {
+      $gte: weight,
+    },
+  });
+  if (!rate)
+    throw new CustomError("zone rate does not exist for this weight", 400);
+  return rate.charge;
 };
