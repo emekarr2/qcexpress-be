@@ -3,6 +3,7 @@ const CreateAdminUseCase = require("../usecases/CreateAdminUseCase");
 // utils
 const ServerResponse = require("../../../utils/response");
 const LoginAdmindUseCase = require("../../authentication/usecases/Authentication/Admin/LoginAdmindUseCase");
+const DeleteAdminUseCase = require("../usecases/DeleteAdminUseCase");
 
 class AdminController {
   async createAdmin(req, res, next) {
@@ -26,7 +27,20 @@ class AdminController {
       ServerResponse.message("login successful")
         .data(result)
         .success(true)
-        .statusCode(201)
+        .statusCode(200)
+        .respond(res);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async deleteAdmin(req, res, next) {
+    try {
+      const payload = req.body;
+      const result = await DeleteAdminUseCase.execute(payload);
+      ServerResponse.message("delete successful")
+        .success(true)
+        .statusCode(200)
         .respond(res);
     } catch (err) {
       next(err);
