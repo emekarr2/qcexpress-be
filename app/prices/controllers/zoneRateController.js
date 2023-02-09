@@ -1,6 +1,7 @@
 const CreateZoneRatesUseCase = require("../usecases/CreateZoneRatesUseCase");
 const ServerResponse = require("../../../utils/response");
 const zone_rate_repo = require("../repository/zone_rate_repo");
+const UpdateZoneRatesUseCase = require("../usecases/UpdateZoneRatesUseCase");
 
 class ZoneRateController {
   async createZoneRate(req, res, next) {
@@ -28,6 +29,24 @@ class ZoneRateController {
 
       await zone_rate_repo.deleteById(id);
       ServerResponse.message("zone rate deleted").statusCode(200).respond(res);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async updateZoneRate(req, res, next) {
+    try {
+      const { id } = req.query;
+      if (!id)
+        ServerResponse.message("pass in zone rate id")
+          .statusCode(400)
+          .success(false)
+          .respond(res);
+      const result = await UpdateZoneRatesUseCase.execute(id, req.body);
+      ServerResponse.message("zone rate updated")
+        .data(result)
+        .statusCode(200)
+        .respond(res);
     } catch (err) {
       next(err);
     }

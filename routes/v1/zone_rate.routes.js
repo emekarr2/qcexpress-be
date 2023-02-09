@@ -8,4 +8,6 @@ router.post("/create", adminAuth(false), ZoneRateController.createZoneRate);
 
 router.delete("/delete", adminAuth(false), ZoneRateController.deleteZoneRate);
 
+router.put("/update", adminAuth(false), ZoneRateController.updateZoneRate);
+
 module.exports = router;

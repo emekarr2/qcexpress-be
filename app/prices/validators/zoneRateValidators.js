@@ -9,3 +9,13 @@ exports.validateCreateNewZoneRate = (data) =>
     max: Joi.number().positive().required(),
     charge: Joi.number().positive().required(),
   }).validate(data);
+
+exports.validateUpdateNewZoneRate = (data) =>
+  Joi.object({
+    type: Joi.string().valid("export", "import", "domestic"),
+    zone: Joi.string(),
+    document: Joi.bool(),
+    min: Joi.number().positive(),
+    max: Joi.number().positive(),
+    charge: Joi.number().positive(),
+  }).validate(data);
