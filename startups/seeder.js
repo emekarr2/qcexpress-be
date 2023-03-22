@@ -3,7 +3,7 @@ const adminRepo = require("../app/admin/repository/admin_repo");
 
 const createSuperAdmin = async () => {
   const admin = await adminRepo.count({});
-  if (admin.length === 0) {
+  if (admin === 0) {
     await CreateAdminUseCase.execute({
       name: "superadmin",
       email: process.env.QC_SUPER_EMAIL,
