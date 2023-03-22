@@ -2,7 +2,7 @@ const DhlService = require("../../services/DhlService");
 const ServerResponse = require("../../utils/response");
 
 class TrackingController {
-  async trackShipment(req, res) {
+  async trackShipment(req, res, next) {
     try {
       const { id } = req.query;
       if (!id)
