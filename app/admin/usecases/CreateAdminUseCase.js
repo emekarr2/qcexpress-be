@@ -1,5 +1,5 @@
 const CustomError = require("../../../errors/error");
-const { validateNewAdminPayload } = require("../validators/admin");
+const { validateNewAdminPayload } = require("../validators/admin.Js");
 const adminRepo = require("../repository/admin_repo");
 const hasher = require("../../authentication//hasher");
 
