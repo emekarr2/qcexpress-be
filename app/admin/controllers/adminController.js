@@ -1,4 +1,5 @@
 const CreateAdminUseCase = require("../usecases/CreateAdminUseCase");
+const adminRepo = require("../repository/admin_repo");
 
 // utils
 const ServerResponse = require("../../../utils/response");
@@ -14,6 +15,19 @@ class AdminController {
         .data(result)
         .success(true)
         .statusCode(201)
+        .respond(res);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async fetchAdmins(req, res, next) {
+    try {
+      const admins = await adminRepo.findAll();
+      ServerResponse.message("admins fetched")
+        .data(admins)
+        .statusCode(200)
+        .success(true)
         .respond(res);
     } catch (err) {
       next(err);
