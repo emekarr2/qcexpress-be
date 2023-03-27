@@ -8,7 +8,7 @@ router.post("/create", adminAuth(false), AdminController.createAdmin);
 
 router.get("/", adminAuth(false), AdminController.fetchAdmins);
 
-router.get("/login", AdminController.loginAdmin);
+router.post("/login", AdminController.loginAdmin);
 
 router.delete("/delete", adminAuth(true), AdminController.deleteAdmin);
 
