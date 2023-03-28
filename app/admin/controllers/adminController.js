@@ -23,7 +23,10 @@ class AdminController {
 
   async fetchAdmins(req, res, next) {
     try {
-      const admins = await adminRepo.findAll();
+      const admins = await adminRepo.findManyByFields(
+        {},
+        { page: req.query.page, limit: req.query.limit }
+      );
       ServerResponse.message("admins fetched")
         .data(admins)
         .statusCode(200)

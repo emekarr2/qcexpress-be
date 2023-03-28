@@ -1,5 +1,6 @@
 const { model, Schema, Types } = require("mongoose");
 const hasher = require("../../authentication/hasher");
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 let AdminSchema = new Schema(
   {
@@ -19,6 +20,8 @@ let AdminSchema = new Schema(
   },
   { timestamps: true, toJSON: { getters: true } }
 );
+
+AdminSchema.plugin(mongoosePaginate);
 
 AdminSchema.pre("save", async function (next) {
   if (this.isModified("password")) {

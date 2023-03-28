@@ -116,7 +116,7 @@ module.exports = class MongoDbRepository {
 		let results;
 		try {
 			paginate.populate = populateKeys;
-			results = await this.modely.paginate(this.__cleanFilterOptions(filter), {
+			results = await this.model.paginate(this.__cleanFilterOptions(filter), {
 				page: paginate.page,
 				limit: paginate.limit,
 				sort: { createdAt: sort },
@@ -144,7 +144,7 @@ module.exports = class MongoDbRepository {
 		let results;
 		try {
 			paginate.populate = populateKeys;
-			results = await this.modely.paginate(paginate);
+			results = await this.model.paginate(paginate);
 		} catch (err) {
 			results = [];
 		}
