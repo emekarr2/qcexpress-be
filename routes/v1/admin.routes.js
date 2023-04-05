@@ -12,4 +12,6 @@ router.post("/login", AdminController.loginAdmin);
 
 router.delete("/delete", adminAuth(true), AdminController.deleteAdmin);
 
+router.get("/kpis", adminAuth(false), AdminController.fetchKPIs);
+
 module.exports = router;
