@@ -2,6 +2,7 @@ const CreateAdminUseCase = require("../usecases/CreateAdminUseCase");
 const adminRepo = require("../repository/admin_repo");
 const userRepo = require("../../user/repository/user_repo");
 const bookingRepo = require("../../booking/repository/booking_repo");
+const DhlService = require("../../../services/DhlService");
 
 // utils
 const ServerResponse = require("../../../utils/response");
@@ -74,8 +75,12 @@ class AdminController {
         bookingRepo.count({}),
         Booking.find({}).limit(5).sort({ $natural: -1 }),
       ]);
+      const bookingTrackingPromise = topBooking.map((booking) => {
+        return DhlService.trackShipment(booking.shipmentMeta.trackingId);
+      });
+      const trackingResult = await Promise.all(bookingTrackingPromise);
       ServerResponse.message("kpis fetched")
-        .data({ userCount, bookingCount, topBooking })
+        .data({ userCount, bookingCount, topBooking, trackingResult })
         .statusCode(200)
         .respond(res);
     } catch (err) {
