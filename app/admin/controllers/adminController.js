@@ -87,6 +87,55 @@ class AdminController {
       next(err);
     }
   }
+
+  async fetchBookings(req, res, next) {
+    try {
+      const { page, limit } = req.query;
+      const bookings = await bookingRepo.findManyByFields({}, { limit, page });
+      ServerResponse.message("bookings fetched")
+        .data(bookings)
+        .statusCode(200)
+        .respond(res);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async fetchUsers(req, res, next) {
+    try {
+      const { page, limit } = req.query;
+      const users = await userRepo.findManyByFields({}, { limit, page });
+      ServerResponse.message("users fetched")
+        .data(users)
+        .statusCode(200)
+        .respond(res);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async fetchBookingsStatus(req, res, next) {
+    try {
+      const { page, limit, id } = req.query;
+      let bookings;
+      if (id) {
+        bookings = [await bookingRepo.findById(id)];
+      } else {
+        bookings = (await bookingRepo.findManyByFields({}, { limit, page }))
+          .docs;
+      }
+      const bookingTrackingPromise = bookings.map((booking) => {
+        return DhlService.trackShipment(booking.shipmentMeta.trackingId);
+      });
+      const trackingResult = await Promise.all(bookingTrackingPromise);
+      ServerResponse.message("bookings fetched")
+        .data(trackingResult)
+        .statusCode(200)
+        .respond(res);
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 module.exports = Object.freeze(new AdminController());

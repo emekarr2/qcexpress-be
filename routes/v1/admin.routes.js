@@ -14,4 +14,14 @@ router.delete("/delete", adminAuth(true), AdminController.deleteAdmin);
 
 router.get("/kpis", adminAuth(false), AdminController.fetchKPIs);
 
+router.get("/users", adminAuth(false), AdminController.fetchUsers);
+
+router.get("/bookings", adminAuth(false), AdminController.fetchBookings);
+
+router.get(
+  "/bookings/status",
+  adminAuth(false),
+  AdminController.fetchBookingsStatus
+);
+
 module.exports = router;
