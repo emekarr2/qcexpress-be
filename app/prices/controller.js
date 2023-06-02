@@ -7,16 +7,28 @@ class PriceController {
   async fetchSingleItemPrice(req, res, next) {
     try {
       const document = req.body.document;
-      if (document === "document" && req.body.weight > 2) throw new CustomError('documents cannot exceed 2kg', 400)
-      if (document === "document" && req.body.deliveryType === "domestic") throw new CustomError('documents cannot be delivered domestically', 400)
+      if (document === "document" && req.body.weight > 2)
+        throw new CustomError("documents cannot exceed 2kg", 400);
+      if (document === "document" && req.body.deliveryType === "domestic")
+        throw new CustomError(
+          "documents cannot be delivered domestically",
+          400
+        );
       const deliveryType = req.body.deliveryType;
       delete req.body.document;
       delete req.body.deliveryType;
-      const dhlPrice = await DhlService.fetchDomesticRate(req.body);
+      let dhlPrice = null;
+      if (document === "document") {
+        dhlPrice = await DhlService.fetchDocumentRate({
+          ...req.query,
+        });
+      } else {
+        dhlPrice = await DhlService.fetchDomesticRate(req.body);
+      }
       const price = await TaxCal(
-        dhlPrice.products[0].totalPrice[0].price,
+        dhlPrice.products.totalPrice[0].price,
         document,
-        dhlPrice.products[0].weight.provided,
+        dhlPrice.products.weight.provided,
         req.body.customerDetails.receiverDetails.countryCode,
         deliveryType,
         req.body.customerDetails.shipperDetails.countyName,
@@ -26,7 +38,7 @@ class PriceController {
       );
       ServerResponse.message("prices fetched")
         .statusCode(200)
-        .data(price.toFixed(2))
+        .data(price)
         .respond(res);
     } catch (err) {
       next(err);

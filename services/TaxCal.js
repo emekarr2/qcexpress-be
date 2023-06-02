@@ -66,7 +66,7 @@ module.exports = async (
         weight
       );
     }
-    const markup = (markUpPerc * amount) / 100;
+    const markup = (markUpPerc * amount.toFixed(2)) / 100;
     const markupVat = (markup * vat) / 100;
     const price = amount + markupVat + markup;
     return price;
@@ -85,16 +85,14 @@ module.exports = async (
       document === "document",
       weight
     )) *
-      amount) /
+      amount.toFixed(2)) /
     100;
   const markupVat = (markup * vat) / 100;
   const price = amount + markupVat + markup;
-  return price;
+  return price.toFixed(2);
 };
 
 const fetchZoneRate = async (type, zone, document, weight) => {
-  console.log("heree");
-  console.log(weight);
   const rate = await zonerateRepo.findOneByFields({
     type,
     zone,
