@@ -69,7 +69,7 @@ module.exports = async (
     const markup = (markUpPerc * amount.toFixed(2)) / 100;
     const markupVat = (markup * vat) / 100;
     const price = amount + markupVat + markup;
-    return price;
+    return price.toFixed(2);
   }
   const zone = zones.find(
     (z) =>
@@ -93,6 +93,7 @@ module.exports = async (
 };
 
 const fetchZoneRate = async (type, zone, document, weight) => {
+  console.log(zone)
   const rate = await zonerateRepo.findOneByFields({
     type,
     zone,
@@ -105,6 +106,6 @@ const fetchZoneRate = async (type, zone, document, weight) => {
     },
   });
   if (!rate)
-    throw new CustomError("zone rate does not exist for this weight", 400);
+    throw new CustomError("zone rate does not exist for this weight", 404);
   return rate.charge;
 };

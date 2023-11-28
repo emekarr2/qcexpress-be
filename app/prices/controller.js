@@ -2,6 +2,7 @@ const DhlService = require("../../services/DhlService");
 const ServerResponse = require("../../utils/response");
 const TaxCal = require("../../services/TaxCal");
 const CustomError = require("../../errors/error");
+const { body } = require("express-validator");
 
 class PriceController {
   async fetchSingleItemPrice(req, res, next) {
@@ -20,10 +21,28 @@ class PriceController {
       let dhlPrice = null;
       if (document === "document") {
         dhlPrice = await DhlService.fetchDocumentRate({
-          ...req.query,
+          originCityName: req.body.customerDetails.shipperDetails.cityName,
+          destinationCountryCode:
+            req.body.customerDetails.receiverDetails.countryCode,
+          originCountryCode:
+            req.body.customerDetails.shipperDetails.countryCode,
+          originPostalCode: req.body.customerDetails.shipperDetails.postalCode,
+          destinationCityName:
+            req.body.customerDetails.receiverDetails.cityName,
+          destinationPostalCode:
+            req.body.customerDetails.receiverDetails.cityName,
+          weight: req.body.weight,
+          length: req.body.length,
+          width: req.body.width,
+          height: req.body.height,
+          isCustomsDeclarable: req.body.isCustomsDeclarable,
+          plannedShippingDate: req.body.plannedShippingDateAndTime,
         });
       } else {
-        dhlPrice = await DhlService.fetchDomesticRate(req.body);
+        dhlPrice = await DhlService.fetchNonDocumentRate({
+          ...req.body,
+          productCode: deliveryType === "domestic" ? "N" : "P",
+        });
       }
       const price = await TaxCal(
         dhlPrice.products.totalPrice[0].price,

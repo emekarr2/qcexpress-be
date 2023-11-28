@@ -1,8 +1,8 @@
 const mongodb = require("./mongodb");
 
-module.exports = () => {
+module.exports = async () => {
   // databases
-  mongodb.connect();
+  await mongodb.connect();
 
   // seed database
   import("./seeder.js").then((seeder) => {

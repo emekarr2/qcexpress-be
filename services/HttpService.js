@@ -85,7 +85,7 @@ module.exports = class HttpService {
       return response.data;
     } catch (e) {
       let message = this.__error.message;
-      if (e.request.res.statusCode === 404) {
+      if (e.request?.res?.statusCode === 404) {
         return null;
       }
       if (e.response) {

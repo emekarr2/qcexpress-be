@@ -27,7 +27,7 @@ class AuthTokensManager {
 				verified_mobile,
 				type: this.TOKEN_TYPE.ACCESS_TOKEN,
 			},
-			60 * 10, // expires in 10 mins
+			60 * 60, // expires in 60 mins
 		);
 	}
 

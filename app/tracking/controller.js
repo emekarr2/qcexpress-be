@@ -11,6 +11,12 @@ class TrackingController {
           .statusCode(400)
           .respond(res);
       const response = await DhlService.trackShipment(id);
+      if (response === null) {
+        return ServerResponse.message("no package found")
+          .statusCode(404)
+          .data(response)
+          .respond(res);
+      }
       ServerResponse.message("tracking data fetched")
         .statusCode(200)
         .data(response)

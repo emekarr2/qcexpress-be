@@ -3,16 +3,25 @@ const mongoosePaginate = require("mongoose-paginate-v2");
 
 let BookingSchema = new Schema(
   {
-    userId: {
+    customerId: {
       type: Types.ObjectId,
-      ref: "User",
       required: true,
+      index: true
     },
-    category: {
+    // category: {
+    //   type: String,
+    //   required: true,
+    // },
+    channel: {
       type: String,
-      required: true,
     },
-    shipment_type: {
+    declaredValue: {
+      type: Number,
+    },
+    environment: {
+      type: String,
+    },
+    document: {
       type: String,
       enum: ["DOCUMENT", "PACKAGE"],
       default: "PACKAGE",
@@ -47,11 +56,8 @@ let BookingSchema = new Schema(
       type: Number,
       required: true,
     },
-    value: {
+    declaredValue: {
       type: Number,
-      default: 0,
-      get: (v) => (v / 100).toFixed(2),
-      set: (v) => v * 100,
     },
     delivery_info: [
       {

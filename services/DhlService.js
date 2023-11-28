@@ -10,7 +10,10 @@ class DhlService {
     });
   }
 
-  async fetchDomesticRate({
+  /**
+   * fetches non document prices. works for domestic and international
+   */
+  async fetchNonDocumentRate({
     length,
     width,
     weight,
@@ -20,7 +23,7 @@ class DhlService {
     nextBusinessDay,
     customerDetails,
     monetaryAmount,
-    productCode = "N",
+    productCode,
   }) {
     const payload = await this.#httpService.post(`/rates`, {
       plannedShippingDateAndTime,
@@ -31,6 +34,18 @@ class DhlService {
       nextBusinessDay,
       customerDetails,
       monetaryAmount,
+      productTypeCode: "all",
+      returnStandardProductsOnly: false,
+      getAdditionalInformation: [
+        {
+          typeCode: "allValueAddedServices",
+          isRequested: true,
+        },
+      ],
+      estimatedDeliveryDate: {
+        isRequested: true,
+        typeCode: "QDDC",
+      },
       accounts: [
         {
           number: process.env.DHL_ACCOUNT_NUMBER,
@@ -49,7 +64,7 @@ class DhlService {
       ],
     });
     const rate = payload.products.find((p) => {
-      return p.productCode === "P";
+      return p.productCode === productCode;
     });
     return {
       exchangeRates: payload.exchangeRates,
@@ -60,6 +75,9 @@ class DhlService {
     };
   }
 
+  /**
+   *  fetches document prices. works for only international
+   */
   async fetchDocumentRate({
     originCityName,
     destinationCountryCode,
@@ -73,14 +91,18 @@ class DhlService {
     height,
     plannedShippingDate,
     isCustomsDeclarable,
-    nextBusinessDay,
+    nextBusinessDay = true,
   }) {
     const payload = await this.#httpService.get(
       `/rates?accountNumber=${process.env.DHL_ACCOUNT_NUMBER}&originCountryCode=${originCountryCode}&originPostalCode=${originPostalCode}&originCityName=${originCityName}&destinationCountryCode=${destinationCountryCode}&destinationPostalCode=${destinationPostalCode}&destinationCityName=${destinationCityName}&weight=${weight}&length=${length}&width=${width}&height=${height}&plannedShippingDate=${plannedShippingDate}&isCustomsDeclarable=${isCustomsDeclarable}&unitOfMeasurement=metric&nextBusinessDay=${nextBusinessDay}&strictValidation=false&getAllValueAddedServices=false&requestEstimatedDeliveryDate=true&estimatedDeliveryDateType=QDDF`
     );
     const rate = payload.products.find((p) => {
-      return p.productCode === "D";
+      return p.productCode === "P";
     });
+    payload.products.forEach(p => {
+      console.log(p.totalPrice, p.productCode, p.productName)
+    })
+    // console.log(payload.products);
     return {
       exchangeRates: payload.exchangeRates,
       products: {
@@ -99,8 +121,18 @@ class DhlService {
       plannedShippingDateAndTime: data.plannedShippingDateAndTime,
       productCode: "N",
       pickup: {
-        isRequested: process.env.NODE_ENV === "production",
+        isRequested: data.pickup,
       },
+      estimatedDeliveryDate: {
+        isRequested: true,
+        typeCode: "QDDC",
+      },
+      getAdditionalInformation: [
+        {
+          typeCode: "pickupDetails",
+          isRequested: data.pickup,
+        },
+      ],
       outputImageProperties: {
         allDocumentsInOneImage: true,
         encodingFormat: "pdf",
@@ -139,8 +171,9 @@ class DhlService {
         unitOfMeasurement: "metric",
         isCustomsDeclarable: false,
         incoterm: "DAP",
-        description: data.description,
-        packages: data.packages,
+        description: data.content.description,
+        packages: data.content.packages,
+        declaredValueCurrency: "NGN",
       },
     };
   }
@@ -151,44 +184,54 @@ class DhlService {
 
   fetchImportShipmentPayload(data) {
     const baseData = this.#fetchShipmentBasePayload(data);
-    baseData.customerDetails.importerDetails = {
-      ...baseData.customerDetails.receiverDetails,
-      type: "IMPORT",
-    };
+    const date = new Date();
     baseData.content = {
       ...baseData.content,
       isCustomsDeclarable: true,
-      exportDeclaration: data.exportDeclaration,
       declaredValueCurrency: "NGN",
       declaredValue: data.declaredValue,
+      exportDeclaration: {
+        ...data.content.exportDeclaration,
+        shipmentType: "personal",
+        customsDocuments: [
+          {
+            typeCode: "INV",
+            value: "MyDHLAPI - CUSDOC-001",
+          },
+        ],
+        invoice: {
+          number: `QC-${date.getUTCSeconds()}`,
+          date: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
+        },
+      },
     };
     baseData.productCode = "P";
-    baseData.outputImageProperties.imageOptions.push({
-      templateName: "COMMERCIAL_INVOICE_P_10",
-      invoiceType: "proforma",
-      languageCode: "eng",
-      isRequested: true,
-      typeCode: "invoice",
-    });
     return baseData;
   }
 
   fetchExportShipmentPayload(data) {
     const baseData = this.#fetchShipmentBasePayload(data);
     baseData.productCode = "P";
-    baseData.outputImageProperties.imageOptions.push({
-      templateName: "COMMERCIAL_INVOICE_P_10",
-      invoiceType: "proforma",
-      languageCode: "eng",
-      isRequested: true,
-      typeCode: "invoice",
-    });
+    const date = new Date();
     baseData.content = {
       ...baseData.content,
-      exportDeclaration: data.exportDeclaration,
       isCustomsDeclarable: true,
       declaredValueCurrency: "NGN",
       declaredValue: data.declaredValue,
+      exportDeclaration: {
+        ...data.content.exportDeclaration,
+        shipmentType: "personal",
+        customsDocuments: [
+          {
+            typeCode: "INV",
+            value: "MyDHLAPI - CUSDOC-001",
+          },
+        ],
+        invoice: {
+          number: `QC-${date.getUTCSeconds()}`,
+          date: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
+        },
+      },
     };
     return baseData;
   }
