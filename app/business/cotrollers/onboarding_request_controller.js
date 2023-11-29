@@ -77,7 +77,6 @@ class OnboardingRequestController {
       const password = await GenerateOtpUseCase.execute(request.email);
       const prod_api_key = crypto.randomBytes(32).toString("hex");
       const staging_api_key = crypto.randomBytes(32).toString("hex");
-      console.log(staging_api_key);
       const business = await buiness_repo.createEntry({
         email: request.email,
         org_name: request.company_name,

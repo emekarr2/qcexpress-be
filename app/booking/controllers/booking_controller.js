@@ -87,6 +87,69 @@ class BookingController {
       next(err);
     }
   }
+
+  async fetchDeveloperDashBoardBookings(req, res, next) {
+    try {
+      const filter = req.body;
+      let query = {};
+      if (filter.count) {
+        let number_items = {};
+        if (filter.count.sort === "$gte") {
+          number_items = {
+            $gte: filter.count.value,
+          };
+        }
+        if (filter.count.sort === "$lte") {
+          number_items = {
+            $lte: filter.count.value,
+          };
+        }
+        query.number_items = number_items;
+      }
+      if (filter.delivery_from) {
+        query.delivery_info = {
+          $elemMatch: {
+            type: "CUSTOMER",
+            "postalAddress.cityName": filter.delivery_from,
+          },
+        };
+      }
+      if (filter.delivery_to) {
+        query.delivery_info = {
+          $elemMatch: {
+            type: "RECIEVER",
+            "postalAddress.cityName": filter.delivery_to,
+          },
+        };
+      }
+      if (filter.date) {
+        query.createdAt = {
+          $gte: new Date(filter.date),
+        };
+      }
+      if (filter.user_email) {
+        query.delivery_info = {
+          $elemMatch: {
+            type: "CUSTOMER",
+            "contactInformation.email": filter.user_email,
+          },
+        };
+      }
+      const bookings = await bookingRepository.findManyByFields({
+        ...query,
+        customerId: req.admin.business,
+        environment: process.env.ENVIRONMENT,
+        channel: "api",
+      });
+      ServerResponse.message("filter successful")
+        .success(true)
+        .statusCode(200)
+        .data(bookings)
+        .respond(res);
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 module.exports = Object.freeze(new BookingController());
