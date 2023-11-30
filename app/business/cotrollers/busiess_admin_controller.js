@@ -107,6 +107,22 @@ class BusinessAdminController {
       next(err);
     }
   }
+
+  async deleteSandBoxData(req, res, next) {
+    try {
+      await bookingRepo.deleteMany({
+        customerId: req.admin.business,
+        environment: "sandbox",
+        channel: "api",
+      });
+      ServerResponse.message("delete successful")
+        .success(true)
+        .statusCode(200)
+        .respond(res);
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 module.exports = Object.freeze(new BusinessAdminController());

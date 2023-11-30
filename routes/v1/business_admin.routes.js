@@ -12,10 +12,12 @@ router.get(
   business_admin_controller.exposeAPIKeys
 );
 
-router.get(
-  "/kpis",
+router.get("/kpis", business_admin(), business_admin_controller.fetchKPIs);
+
+router.delete(
+  "/sandbox/clear",
   business_admin(),
-  business_admin_controller.fetchKPIs
+  business_admin_controller.deleteSandBoxData
 );
 
 module.exports = router;
