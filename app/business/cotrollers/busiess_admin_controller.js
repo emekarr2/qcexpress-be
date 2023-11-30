@@ -52,7 +52,7 @@ class BusinessAdminController {
             customerId: req.admin.business,
             environment: process.env.ENVIRONMENT,
             channel: "api",
-          })
+          }).select('-shipmentMeta.documents')
             .limit(5)
             .sort({ $natural: -1 }),
           Booking.aggregate([
