@@ -141,7 +141,12 @@ class OnboardingRequestController {
         );
       request.status = "approved";
       await onboarding_request_repo.saveData(request);
-      const password = await GenerateOtpUseCase.execute(request.email);
+      let password;
+      if (process.env.ENVIRONMENT === "sandbox") {
+        password = "0000000000";
+      } else {
+        password = await GenerateOtpUseCase.execute(request.email);
+      }
       const prod_api_key = crypto.randomBytes(32).toString("hex");
       const staging_api_key = crypto.randomBytes(32).toString("hex");
       const business = await buiness_repo.createEntry({
