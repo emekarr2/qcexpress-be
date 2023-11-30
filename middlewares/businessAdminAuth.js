@@ -31,7 +31,8 @@ module.exports = () => {
       req.admin.email = result.email;
       req.admin.id = result.userId;
       req.admin.name = result.username;
-      req.admin.business = adminExists.business;
+      req.admin.business = adminExists.business.toString();
+      req.admin.org_name = adminExists.org_name;
       next();
     } catch (err) {
       next(new CustomError("access denied", 403));

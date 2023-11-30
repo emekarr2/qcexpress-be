@@ -1,4 +1,5 @@
 const CreateOnboardingRequestUsecase = require("../usecases/onboarding_request/CreateOnboardingRequestUsecase");
+const CreateOBusinessAdminUsecase = require("../usecases/admin/CreateBusinessAdminUseCase");
 const ServerResponse = require("../../../utils/response");
 const onboarding_request_repo = require("../repository/onboarding_request_repo");
 const buiness_admin_repo = require("../repository/buiness_admin_repo");
@@ -57,6 +58,72 @@ class OnboardingRequestController {
         .data(request)
         .statusCode(200)
         .success(true)
+        .respond(res);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async createBusinessUser(req, res, next) {
+    try {
+      const payload = req.body;
+      const result = await CreateOBusinessAdminUsecase.execute({
+        ...payload,
+        access_tier: "2",
+        business: req.admin.business,
+        org_name: req.admin.org_name,
+      });
+      ServerResponse.message("admin created. send login details to admin")
+        .data(result)
+        .success(true)
+        .statusCode(201)
+        .respond(res);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async listBusinessUser(req, res, next) {
+    try {
+      const filter = {};
+      if (req.query.tier) {
+        filter.access_tier = req.query.tier;
+      }
+      const admins = await buiness_admin_repo.findManyByFields(
+        {
+          business: req.admin.business,
+          ...filter,
+        },
+        {
+          limit: req.query.limit,
+          page: req.query.page,
+        }
+      );
+      ServerResponse.message("success")
+        .data(admins)
+        .success(true)
+        .statusCode(200)
+        .respond(res);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async deleteUser(req, res, next) {
+    try {
+      const id = req.query.id;
+      const deleted = await buiness_admin_repo.deleteById(id);
+      if (!deleted) {
+        return ServerResponse.message("user does not exist")
+          .data(deleted)
+          .success(true)
+          .statusCode(404)
+          .respond(res);
+      }
+      ServerResponse.message("deleted successfully")
+        .data(deleted)
+        .success(true)
+        .statusCode(200)
         .respond(res);
     } catch (err) {
       next(err);
