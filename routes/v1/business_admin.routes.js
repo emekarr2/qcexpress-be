@@ -13,6 +13,12 @@ router.get(
   business_admin_controller.exposeAPIKeys
 );
 
+router.get(
+  "/tokens/refresh",
+  business_admin(),
+  business_admin_controller.refreshAPIKeys
+);
+
 router.post(
   "/user/create",
   business_admin(),

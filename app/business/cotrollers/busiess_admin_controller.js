@@ -5,6 +5,7 @@ const { decrypt } = require("../../../utils/encrypter");
 const bookingRepo = require("../../booking/repository/booking_repo");
 const Booking = require("../../booking/model/Booking");
 const DhlService = require("../../../services/DhlService");
+const crypto = require("crypto");
 
 class BusinessAdminController {
   async loginBusinessAdmin(req, res, next) {
@@ -39,6 +40,24 @@ class BusinessAdminController {
     }
   }
 
+  async refreshAPIKeys(req, res, next) {
+    try {
+      const prod_api_key = crypto.randomBytes(32).toString("hex");
+      const staging_api_key = crypto.randomBytes(32).toString("hex");
+      await businessRepo.updateById(req.admin.business, {
+        prod_api_key: encrypt(`${prod_api_key}`),
+        staging_api_key: encrypt(`${staging_api_key}`),
+      });
+      ServerResponse.message("api keys refreshed")
+        .data(null)
+        .statusCode(201)
+        .success(true)
+        .respond(res);
+    } catch (err) {
+      next(err);
+    }
+  }
+
   async fetchKPIs(req, res, next) {
     try {
       const [bookingCount, topBooking, stateCount, totalValue] =
@@ -52,7 +71,8 @@ class BusinessAdminController {
             customerId: req.admin.business,
             environment: process.env.ENVIRONMENT,
             channel: "api",
-          }).select('-shipmentMeta.documents')
+          })
+            .select("-shipmentMeta.documents")
             .limit(5)
             .sort({ $natural: -1 }),
           Booking.aggregate([
