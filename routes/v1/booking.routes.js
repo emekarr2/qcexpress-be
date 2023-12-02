@@ -13,13 +13,13 @@ router.post(
 
 router.get(
   "/download-docs",
-  businessAdminAuth(false),
+  businessAdminAuth("2"),
   BookingController.downloadDocs
 );
 
 router.post(
   "/developer/booking",
-  businessAdminAuth(false),
+  businessAdminAuth("2"),
   BookingController.fetchDeveloperDashBoardBookings
 );
 module.exports = router;

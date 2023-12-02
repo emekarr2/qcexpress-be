@@ -3,7 +3,7 @@ const token = require("../app/authentication/tokens");
 const CustomError = require("../errors/error");
 const admin_repo = require("../app/business/repository/buiness_admin_repo");
 
-module.exports = () => {
+module.exports = (tier) => {
   return async (req, res, next) => {
     try {
       const tokenHeader = req.headers.authorization;
@@ -27,6 +27,12 @@ module.exports = () => {
           .success(false)
           .statusCode(403)
           .respond(res);
+      if (adminExists.access_tier >= tier) {
+        return ServerResponse.message("you are not authorised to access this route")
+          .success(false)
+          .statusCode(403)
+          .respond(res);
+      }
       req.admin = {};
       req.admin.email = result.email;
       req.admin.id = result.userId;

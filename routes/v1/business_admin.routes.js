@@ -9,39 +9,39 @@ router.post("/login", business_admin_controller.loginBusinessAdmin);
 
 router.get(
   "/tokens/expose",
-  business_admin(),
+  business_admin("2"),
   business_admin_controller.exposeAPIKeys
 );
 
 router.get(
   "/tokens/refresh",
-  business_admin(),
+  business_admin("1"),
   business_admin_controller.refreshAPIKeys
 );
 
 router.post(
   "/user/create",
-  business_admin(),
+  business_admin("1"),
   onboarding_controller.createBusinessUser
 );
 
 router.get(
   "/user/fetch",
-  business_admin(),
+  business_admin("2"),
   onboarding_controller.listBusinessUser
 );
 
 router.delete(
   "/user/delete",
-  business_admin(),
+  business_admin("1"),
   onboarding_controller.deleteUser
 );
 
-router.get("/kpis", business_admin(), business_admin_controller.fetchKPIs);
+router.get("/kpis", business_admin("2"), business_admin_controller.fetchKPIs);
 
 router.delete(
   "/sandbox/clear",
-  business_admin(),
+  business_admin("1"),
   business_admin_controller.deleteSandBoxData
 );
 
