@@ -6,6 +6,7 @@ const bookingRepo = require("../../booking/repository/booking_repo");
 const Booking = require("../../booking/model/Booking");
 const DhlService = require("../../../services/DhlService");
 const crypto = require("crypto");
+const { encrypt } = require("../../../utils/encrypter");
 
 class BusinessAdminController {
   async loginBusinessAdmin(req, res, next) {
