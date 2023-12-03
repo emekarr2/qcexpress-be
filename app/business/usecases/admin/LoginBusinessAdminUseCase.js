@@ -11,8 +11,8 @@ class LoginBusinessAdminUseCase {
   #tokens = tokens;
 
   async execute(data) {
-    if (!data.email) throw new CustomError('pass in email', 400)
-    if (!data.password) throw new CustomError('pass in a password', 400)
+    if (!data.email) throw new CustomError("pass in email", 400);
+    if (!data.password) throw new CustomError("pass in a password", 400);
     const admin = await this.#adminRepo.findOneByFields({
       email: data.email,
     });
@@ -25,14 +25,14 @@ class LoginBusinessAdminUseCase {
     const access_token = await this.#tokens.generateAccessToken(
       admin.email,
       admin.id,
-      admin.org_name,
+      `${admin.firstname} ${admin.lastname}`,
       admin.business
     );
     const refresh_tokens = await this.#tokens.generateRefreshToken(
       admin.email,
       admin.id,
-      admin.business,
-      admin.org_name
+      `${admin.firstname} ${admin.lastname}`,
+      admin.business
     );
     return {
       access_token,
