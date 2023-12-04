@@ -99,6 +99,19 @@ class OnboardingRequestController {
         business: req.admin.business,
         org_name: req.admin.org_name,
       });
+      await sendgrid.sendEmail(
+        payload.email,
+        "Welcome to QCExpress",
+        "plain",
+        {
+          header:
+            "You have been invited to the QCExpress Developer Dashboard",
+          name: payload.firstname,
+          body: `Your password to the dashboard is ${payload.password}.
+          Use it to log into the Dashbaord and change them immediately.`,
+          "header-body": "",
+        }
+      );
       ServerResponse.message("admin created. send login details to admin")
         .data(result)
         .success(true)
@@ -167,12 +180,7 @@ class OnboardingRequestController {
         );
       request.status = "approved";
       await onboarding_request_repo.saveData(request);
-      let password;
-      if (process.env.ENVIRONMENT === "sandbox") {
-        password = "0000000000";
-      } else {
-        password = await GenerateOtpUseCase.execute(request.email);
-      }
+      let password = await GenerateOtpUseCase.execute(request.email);
       const prod_api_key = crypto.randomBytes(32).toString("hex");
       const staging_api_key = crypto.randomBytes(32).toString("hex");
       const business = await buiness_repo.createEntry({
@@ -203,7 +211,8 @@ class OnboardingRequestController {
             "Your request to access QCExpress Developer API has been approved",
           name: request.firstname,
           body: `We are pleased to inform you that your request to access the QCExpress Developer API has been approved.
-          \nYour credentials will be sent to you shortly. Use them to log into the Dashbaord and change them immediately.`,
+          \nYour password to the dashboard is ${password}.
+          Use it to log into the Dashbaord and change them immediately.`,
           "header-body": "",
         }
       );

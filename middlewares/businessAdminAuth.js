@@ -27,7 +27,7 @@ module.exports = (tier) => {
           .success(false)
           .statusCode(403)
           .respond(res);
-      if (adminExists.access_tier >= tier) {
+      if (adminExists.access_tier > tier) {
         return ServerResponse.message("you are not authorised to access this route")
           .success(false)
           .statusCode(403)
