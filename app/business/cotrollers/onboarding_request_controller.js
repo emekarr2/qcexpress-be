@@ -8,12 +8,25 @@ const GenerateOtpUseCase = require("../../authentication/usecases/Otp/GenerateOt
 const CustomError = require("../../../errors/error");
 const { encrypt } = require("../../../utils/encrypter");
 const crypto = require("crypto");
+const sendgrid = require("../../../services/SendGrid");
 
 class OnboardingRequestController {
   async sendOnboardingRequest(req, res, next) {
     try {
       const body = req.body;
       const request = await CreateOnboardingRequestUsecase.execute(body);
+      await sendgrid.sendEmail(
+        request.email,
+        "Your request has been recieved",
+        "plain",
+        {
+          header:
+            "Your request to access QCExpress Developer API has been recieved",
+          name: request.firstname,
+          body: "The team is currently reviewing your request to get access to the Developer API.\n You will get a feedback from us shortly.",
+          "header-body": "",
+        }
+      );
       ServerResponse.message("onboarding request placed")
         .statusCode(201)
         .data(request)
@@ -54,6 +67,19 @@ class OnboardingRequestController {
       request.status = "rejected";
       await onboarding_request_repo.saveData(request);
       // send rejection email
+      await sendgrid.sendEmail(
+        request.email,
+        "We have an update on your onboarding request",
+        "plain",
+        {
+          header:
+            "Your request to access QCExpress Developer API has been denied",
+          name: request.firstname,
+          body: `We are sorry to inform you that your request to access the QCExpress Developer API has been rejected.
+          If you feel this is a mistake reach out to us on customercare@quartzclassic.com`,
+          "header-body": "",
+        }
+      );
       ServerResponse.message("request rejected")
         .data(request)
         .statusCode(200)
@@ -168,6 +194,19 @@ class OnboardingRequestController {
         password,
       });
       // send onboarding email
+      await sendgrid.sendEmail(
+        request.email,
+        "We have an update on your onboarding request",
+        "plain",
+        {
+          header:
+            "Your request to access QCExpress Developer API has been approved",
+          name: request.firstname,
+          body: `We are pleased to inform you that your request to access the QCExpress Developer API has been approved.
+          \nYour credentials will be sent to you shortly. Use them to log into the Dashbaord and change them immediately.`,
+          "header-body": "",
+        }
+      );
       ServerResponse.message("request approved")
         .data(request)
         .statusCode(200)
