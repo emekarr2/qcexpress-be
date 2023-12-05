@@ -7,6 +7,7 @@ const Booking = require("../../booking/model/Booking");
 const DhlService = require("../../../services/DhlService");
 const crypto = require("crypto");
 const { encrypt } = require("../../../utils/encrypter");
+const { ObjectID } = require("mongodb");
 
 class BusinessAdminController {
   async loginBusinessAdmin(req, res, next) {
@@ -79,7 +80,7 @@ class BusinessAdminController {
           Booking.aggregate([
             {
               $match: {
-                customerId: req.admin.business,
+                customerId: new ObjectID(req.admin.business),
                 environment: process.env.ENVIRONMENT,
                 channel: "api",
               },
@@ -97,7 +98,7 @@ class BusinessAdminController {
           Booking.aggregate([
             {
               $match: {
-                customerId: req.admin.business,
+                customerId: new ObjectID(req.admin.business),
                 environment: process.env.ENVIRONMENT,
                 channel: "api",
               },
