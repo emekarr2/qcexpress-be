@@ -13,35 +13,22 @@ class DhlService {
   /**
    * fetches non document prices. works for domestic and international
    */
-  async fetchNonDocumentRate({
-    length,
-    width,
-    weight,
-    height,
+  async fetchRates({
+    packages,
     plannedShippingDateAndTime,
-    isCustomsDeclarable = false,
-    nextBusinessDay,
     customerDetails,
-    monetaryAmount,
     productCode,
+    deliveryType,
+    document,
   }) {
     const payload = await this.#httpService.post(`/rates`, {
       plannedShippingDateAndTime,
       productCode,
-      payerCountryCode: "NG",
       unitOfMeasurement: "metric",
-      isCustomsDeclarable,
-      nextBusinessDay,
+      isCustomsDeclarable:
+        deliveryType === "domestic" || document === "document" ? false : true,
+      nextBusinessDay: true,
       customerDetails,
-      monetaryAmount,
-      productTypeCode: "all",
-      returnStandardProductsOnly: false,
-      getAdditionalInformation: [
-        {
-          typeCode: "allValueAddedServices",
-          isRequested: true,
-        },
-      ],
       estimatedDeliveryDate: {
         isRequested: true,
         typeCode: "QDDC",
@@ -52,16 +39,7 @@ class DhlService {
           typeCode: "shipper",
         },
       ],
-      packages: [
-        {
-          weight,
-          dimensions: {
-            length,
-            width,
-            height,
-          },
-        },
-      ],
+      packages,
     });
     const rate = payload.products.find((p) => {
       return p.productCode === productCode;
@@ -99,9 +77,9 @@ class DhlService {
     const rate = payload.products.find((p) => {
       return p.productCode === "P";
     });
-    payload.products.forEach(p => {
-      console.log(p.totalPrice, p.productCode, p.productName)
-    })
+    payload.products.forEach((p) => {
+      console.log(p.totalPrice, p.productCode, p.productName);
+    });
     // console.log(payload.products);
     return {
       exchangeRates: payload.exchangeRates,

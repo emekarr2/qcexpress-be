@@ -15,41 +15,23 @@ class PriceController {
           "documents cannot be delivered domestically",
           400
         );
-      const deliveryType = req.body.deliveryType;
-      delete req.body.document;
-      delete req.body.deliveryType;
       let dhlPrice = null;
-      if (document === "document") {
-        dhlPrice = await DhlService.fetchDocumentRate({
-          originCityName: req.body.customerDetails.shipperDetails.cityName,
-          destinationCountryCode:
-            req.body.customerDetails.receiverDetails.countryCode,
-          originCountryCode:
-            req.body.customerDetails.shipperDetails.countryCode,
-          originPostalCode: req.body.customerDetails.shipperDetails.postalCode,
-          destinationCityName:
-            req.body.customerDetails.receiverDetails.cityName,
-          destinationPostalCode:
-            req.body.customerDetails.receiverDetails.cityName,
-          weight: req.body.weight,
-          length: req.body.length,
-          width: req.body.width,
-          height: req.body.height,
-          isCustomsDeclarable: req.body.isCustomsDeclarable,
-          plannedShippingDate: req.body.plannedShippingDateAndTime,
-        });
-      } else {
-        dhlPrice = await DhlService.fetchNonDocumentRate({
-          ...req.body,
-          productCode: deliveryType === "domestic" ? "N" : "P",
-        });
-      }
+      dhlPrice = await DhlService.fetchRates({
+        ...req.body,
+        productCode:
+          req.body.deliveryType === "domestic"
+            ? "N"
+            : req.body.document === "document"
+            ? "D"
+            : "P",
+      });
+
       const price = await TaxCal(
         dhlPrice.products.totalPrice[0].price,
         document,
         dhlPrice.products.weight.provided,
         req.body.customerDetails.receiverDetails.countryCode,
-        deliveryType,
+        req.body.deliveryType,
         req.body.customerDetails.shipperDetails.countyName,
         req.body.customerDetails.receiverDetails.countyName,
         req.body.customerDetails.shipperDetails.cityName,

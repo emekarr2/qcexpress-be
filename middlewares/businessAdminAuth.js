@@ -41,6 +41,7 @@ module.exports = (tier) => {
       req.admin.org_name = adminExists.org_name;
       next();
     } catch (err) {
+      console.log(err)
       next(new CustomError("access denied", 403));
     }
   };

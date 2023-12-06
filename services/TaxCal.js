@@ -93,7 +93,7 @@ module.exports = async (
 };
 
 const fetchZoneRate = async (type, zone, document, weight) => {
-  console.log(zone)
+  console.log(zone, document, weight, type)
   const rate = await zonerateRepo.findOneByFields({
     type,
     zone,
