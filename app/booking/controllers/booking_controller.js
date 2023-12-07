@@ -27,6 +27,7 @@ class BookingController {
       data.bookingData.environment = req.reqState
         ? req.reqState.environment
         : null;
+      data.bookingData.document = data.document;
       const result = await CreateBookingUseCase.execute(
         data.bookingData,
         shipmentData
@@ -57,7 +58,10 @@ class BookingController {
           .statusCode(200)
           .data({
             tracking: result.shipmentMeta.trackingId,
-            attachment: result.shipmentMeta.documents[0].content,
+            attachment:
+              req.query.returndoc === "true"
+                ? result.shipmentMeta.documents[0].content
+                : null,
           })
           .respond(res);
       }

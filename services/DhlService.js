@@ -53,43 +53,6 @@ class DhlService {
     };
   }
 
-  /**
-   *  fetches document prices. works for only international
-   */
-  async fetchDocumentRate({
-    originCityName,
-    destinationCountryCode,
-    originCountryCode,
-    originPostalCode,
-    destinationCityName,
-    destinationPostalCode,
-    weight,
-    length,
-    width,
-    height,
-    plannedShippingDate,
-    isCustomsDeclarable,
-    nextBusinessDay = true,
-  }) {
-    const payload = await this.#httpService.get(
-      `/rates?accountNumber=${process.env.DHL_ACCOUNT_NUMBER}&originCountryCode=${originCountryCode}&originPostalCode=${originPostalCode}&originCityName=${originCityName}&destinationCountryCode=${destinationCountryCode}&destinationPostalCode=${destinationPostalCode}&destinationCityName=${destinationCityName}&weight=${weight}&length=${length}&width=${width}&height=${height}&plannedShippingDate=${plannedShippingDate}&isCustomsDeclarable=${isCustomsDeclarable}&unitOfMeasurement=metric&nextBusinessDay=${nextBusinessDay}&strictValidation=false&getAllValueAddedServices=false&requestEstimatedDeliveryDate=true&estimatedDeliveryDateType=QDDF`
-    );
-    const rate = payload.products.find((p) => {
-      return p.productCode === "P";
-    });
-    payload.products.forEach((p) => {
-      console.log(p.totalPrice, p.productCode, p.productName);
-    });
-    // console.log(payload.products);
-    return {
-      exchangeRates: payload.exchangeRates,
-      products: {
-        weight: rate.weight,
-        totalPrice: rate.totalPrice,
-      },
-    };
-  }
-
   async trackShipment(trackingId) {
     return await this.#httpService.get(`/shipments/${trackingId}/tracking`);
   }
@@ -99,18 +62,8 @@ class DhlService {
       plannedShippingDateAndTime: data.plannedShippingDateAndTime,
       productCode: "N",
       pickup: {
-        isRequested: data.pickup,
+        isRequested: false,
       },
-      estimatedDeliveryDate: {
-        isRequested: true,
-        typeCode: "QDDC",
-      },
-      getAdditionalInformation: [
-        {
-          typeCode: "pickupDetails",
-          isRequested: data.pickup,
-        },
-      ],
       outputImageProperties: {
         allDocumentsInOneImage: true,
         encodingFormat: "pdf",
@@ -151,7 +104,6 @@ class DhlService {
         incoterm: "DAP",
         description: data.content.description,
         packages: data.content.packages,
-        declaredValueCurrency: "NGN",
       },
     };
   }
@@ -160,57 +112,53 @@ class DhlService {
     return this.#fetchShipmentBasePayload(data);
   }
 
-  fetchImportShipmentPayload(data) {
+  fetchExportShipmentPayload(data, productCode) {
     const baseData = this.#fetchShipmentBasePayload(data);
     const date = new Date();
+    const parsedInvDate = `${date.getFullYear()}-${(date.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
     baseData.content = {
       ...baseData.content,
-      isCustomsDeclarable: true,
+      ...data.content,
       declaredValueCurrency: "NGN",
-      declaredValue: data.declaredValue,
+      isCustomsDeclarable: productCode === "D" ? false : true,
       exportDeclaration: {
         ...data.content.exportDeclaration,
-        shipmentType: "personal",
-        customsDocuments: [
-          {
-            typeCode: "INV",
-            value: "MyDHLAPI - CUSDOC-001",
-          },
-        ],
+        exportReason: "Permanent",
+        exportReasonType: "permanent",
         invoice: {
-          number: `QC-${date.getUTCSeconds()}`,
-          date: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
+          number: `QCINV-${date.getUTCSeconds()}`,
+          date: parsedInvDate,
         },
       },
     };
-    baseData.productCode = "P";
+    baseData.productCode = productCode;
     return baseData;
   }
 
-  fetchExportShipmentPayload(data) {
+  fetchImportShipmentPayload(data, productCode) {
     const baseData = this.#fetchShipmentBasePayload(data);
-    baseData.productCode = "P";
     const date = new Date();
+    const parsedInvDate = `${date.getFullYear()}-${(date.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
     baseData.content = {
       ...baseData.content,
-      isCustomsDeclarable: true,
+      ...data.content,
       declaredValueCurrency: "NGN",
-      declaredValue: data.declaredValue,
+      isCustomsDeclarable: productCode === "D" ? false : true,
       exportDeclaration: {
         ...data.content.exportDeclaration,
-        shipmentType: "personal",
-        customsDocuments: [
-          {
-            typeCode: "INV",
-            value: "MyDHLAPI - CUSDOC-001",
-          },
-        ],
+        exportReason: "Permanent",
+        exportReasonType: "permanent",
         invoice: {
-          number: `QC-${date.getUTCSeconds()}`,
-          date: `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
+          number: `QCINV-${date.getUTCSeconds()}`,
+          date: parsedInvDate,
         },
       },
     };
+    baseData.productCode = productCode;
     return baseData;
   }
 }

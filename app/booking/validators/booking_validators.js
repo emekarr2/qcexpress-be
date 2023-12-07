@@ -8,7 +8,7 @@ exports.validateBooking = (data) =>
       environment: joi.string(),
       declaredValue: joi.number(),
       // category: joi.string().required(),
-      shipment_type: joi.string().default("PACKAGE"),
+      document: joi.string(),
       packages: joi.array().items(
         joi.object({
           weight: joi.number(),

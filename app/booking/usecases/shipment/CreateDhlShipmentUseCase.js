@@ -18,7 +18,6 @@ class CreateDhlShipment {
       result.value,
       data.deliveryType
     );
-    console.log('contact', contactData)
     return {
       shipmentData: {
         trackingId: shipmentData.shipmentTrackingNumber,
@@ -53,9 +52,15 @@ class CreateDhlShipment {
     if (type === "domestic") {
       return this.#DhlService.fetchDomesticShipmentPayload(data);
     } else if (type === "export") {
-      return this.#DhlService.fetchExportShipmentPayload(data);
+      return this.#DhlService.fetchExportShipmentPayload(
+        data,
+        data.document === "document" ? "D" : "P"
+      );
     } else if (type === "import") {
-      return this.#DhlService.fetchImportShipmentPayload(data);
+      return this.#DhlService.fetchImportShipmentPayload(
+        data,
+        data.document === "document" ? "D" : "P"
+      );
     } else {
       throw new CustomError("invalid shipment type selected", 400);
     }

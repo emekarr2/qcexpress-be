@@ -2,9 +2,10 @@ const Joi = require("joi");
 
 exports.validateShipmentCreation = (data) =>
   Joi.object({
+    document: Joi.string().valid('document', 'non_document'),
     plannedShippingDateAndTime: Joi.string().required(),
     pickup: Joi.bool().default(false),
-    declaredValue: Joi.number().required(),
+    declaredValue: Joi.number(),
     deliveryType: Joi.string().allow("export", "domestic", "import").required(),
     content: Joi.object({
       packages: Joi.array().items(
@@ -19,13 +20,15 @@ exports.validateShipmentCreation = (data) =>
         })
       ),
       declaredValue: Joi.number().positive().required(),
-      isCustomsDeclarable: Joi.bool().required(),
+      isCustomsDeclarable: Joi.bool(),
       description: Joi.string(),
       exportDeclaration: Joi.object({
         invoice: {
           number: Joi.string().default(1),
           date: Joi.date().default(new Date()),
         },
+        placeOfIncoterm: Joi.string().required(),
+        shipmentType: Joi.string().required(),
         lineItems: Joi.array().items(
           Joi.object({
             number: Joi.number().required(),
@@ -33,6 +36,16 @@ exports.validateShipmentCreation = (data) =>
               unitOfMeasurement: Joi.string().default("PCS"),
               value: Joi.number().required(),
             }),
+            commodityCodes: Joi.array()
+              .items({
+                typeCode: Joi.string(),
+                value: Joi.string(),
+              })
+              .default([{
+                typeCode: "inbound",
+                value: "85171300",
+              }]),
+            exportReasonType: Joi.string().default("permanent"),
             price: Joi.number().required(),
             description: Joi.string().required(),
             weight: Joi.object({
@@ -40,7 +53,7 @@ exports.validateShipmentCreation = (data) =>
               grossValue: Joi.number().required(),
             }),
             isTaxesPaid: Joi.bool(),
-            "manufacturerCountry": Joi.string()
+            manufacturerCountry: Joi.string(),
           })
         ),
         packageMarks: Joi.string().max(300),

@@ -6,7 +6,7 @@ let BookingSchema = new Schema(
     customerId: {
       type: Types.ObjectId,
       required: true,
-      index: true
+      index: true,
     },
     // category: {
     //   type: String,
@@ -23,8 +23,7 @@ let BookingSchema = new Schema(
     },
     document: {
       type: String,
-      enum: ["DOCUMENT", "PACKAGE"],
-      default: "PACKAGE",
+      enum: ["document", "non_document"],
     },
     packages: [
       {
