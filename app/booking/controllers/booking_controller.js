@@ -79,13 +79,14 @@ class BookingController {
           .statusCode(400)
           .respond(res);
       const booking = await bookingRepository.findById(id);
-      const ab = FileManager.base64ToArrayBuffer(
-        booking.shipmentMeta.documents[0].content
-      );
+      // const ab = FileManager.base64ToArrayBuffer(
+      //   booking.shipmentMeta.documents[0].content
+      // );
       ServerResponse.message("download successful")
         .success(true)
         .statusCode(200)
-        .data(Buffer.from(new Uint8Array(ab)))
+        // .data(Buffer.from(new Uint8Array(ab)))
+        .data(booking.shipmentMeta.documents)
         .respond(res);
     } catch (err) {
       next(err);
@@ -139,12 +140,19 @@ class BookingController {
           },
         };
       }
-      const bookings = await bookingRepository.findManyByFields({
-        ...query,
-        customerId: req.admin.business,
-        environment: process.env.ENVIRONMENT,
-        channel: "api",
-      });
+      const bookings = await bookingRepository.findManyByFields(
+        {
+          ...query,
+          customerId: req.admin.business,
+          environment: process.env.ENVIRONMENT,
+          channel: "api",
+        },
+        {
+          select: "-shipmentMeta.documents",
+          page: req.query.page,
+          limit: req.query.limit,
+        }
+      );
       ServerResponse.message("filter successful")
         .success(true)
         .statusCode(200)
