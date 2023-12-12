@@ -7,6 +7,7 @@ exports.validateBooking = (data) =>
       channel: joi.string().required(),
       environment: joi.string(),
       declaredValue: joi.number(),
+      bookingCost: joi.number().positive(),
       // category: joi.string().required(),
       document: joi.string(),
       packages: joi.array().items(

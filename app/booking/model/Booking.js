@@ -18,6 +18,9 @@ let BookingSchema = new Schema(
     declaredValue: {
       type: Number,
     },
+    bookingCost: {
+      type: Number,
+    },
     environment: {
       type: String,
     },

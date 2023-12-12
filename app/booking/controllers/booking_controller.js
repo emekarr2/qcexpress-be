@@ -13,6 +13,7 @@ class BookingController {
       const { shipmentData, contactData } =
         await CreateDhlShipmentUseCase.execute(data);
       data.bookingData = {};
+      data.bookingData.bookingCost = data.bookingCost;
       data.bookingData.packages = data.content.packages;
       data.bookingData.description = data.content.description;
       data.bookingData.number_items = data.content.packages.length;

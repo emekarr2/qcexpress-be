@@ -5,6 +5,7 @@ exports.validateShipmentCreation = (data) =>
     document: Joi.string().valid('document', 'non_document'),
     plannedShippingDateAndTime: Joi.string().required(),
     pickup: Joi.bool().default(false),
+    bookingCost: Joi.number().positive(),
     declaredValue: Joi.number(),
     deliveryType: Joi.string().allow("export", "domestic", "import").required(),
     content: Joi.object({

@@ -72,17 +72,32 @@ class AdminController {
 
   async fetchKPIs(req, res, next) {
     try {
-      const [userCount, bookingCount, topBooking] = await Promise.all([
-        userRepo.count({}),
-        bookingRepo.count({}),
-        Booking.find({}).limit(5).sort({ $natural: -1 }),
-      ]);
+      const [userCount, bookingCount, topBooking, totalCost] =
+        await Promise.all([
+          userRepo.count({}),
+          bookingRepo.count({}),
+          Booking.find({}).limit(5).sort({ $natural: -1 }),
+          Booking.aggregate([
+            {
+              $group: {
+                _id: null,
+                totalCost: { $sum: "$bookingCost" },
+              },
+            },
+          ]),
+        ]);
       const bookingTrackingPromise = topBooking.map((booking) => {
         return DhlService.trackShipment(booking.shipmentMeta.trackingId);
       });
       const trackingResult = await Promise.all(bookingTrackingPromise);
       ServerResponse.message("kpis fetched")
-        .data({ userCount, bookingCount, topBooking, trackingResult })
+        .data({
+          userCount,
+          bookingCount,
+          topBooking,
+          trackingResult,
+          totalCost: totalCost[0].totalCost,
+        })
         .statusCode(200)
         .respond(res);
     } catch (err) {
@@ -138,7 +153,6 @@ class AdminController {
       next(err);
     }
   }
-
 }
 
 module.exports = Object.freeze(new AdminController());
