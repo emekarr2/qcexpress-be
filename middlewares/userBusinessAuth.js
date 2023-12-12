@@ -68,6 +68,7 @@ module.exports = (businessOnly) => async (req, res, next) => {
       req.user.verified_email = result.verified_email;
       req.user.verified_mobile = result.verified_mobile;
       req.user.channel = 'qc'
+      req.user.environment = process.env.ENVIRONMENT
     }
     next();
   } catch (err) {

@@ -26,7 +26,7 @@ class BookingController {
         : req.reqState.channel;
       data.bookingData.environment = req.reqState
         ? req.reqState.environment
-        : null;
+        : req.user.environment;
       data.bookingData.document = data.document;
       const result = await CreateBookingUseCase.execute(
         data.bookingData,
