@@ -107,8 +107,28 @@ class AdminController {
 
   async fetchBookings(req, res, next) {
     try {
-      const { page, limit } = req.query;
-      const bookings = await bookingRepo.findManyByFields({}, { limit, page });
+      const { page, limit, from, to } = req.query;
+      const query = {};
+      if (from) {
+        query.createdAt = {
+          $gte: new Date(from),
+        };
+      }
+      if (to) {
+        query.createdAt = {
+          $lt: new Date(to),
+        };
+      }
+      if (to && from) {
+        query.createdAt = {
+          $gte: from,
+          $lt: to,
+        };
+      }
+      const bookings = await bookingRepo.findManyByFields(query, {
+        limit,
+        page,
+      });
       ServerResponse.message("bookings fetched")
         .data(bookings)
         .statusCode(200)

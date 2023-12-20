@@ -5,15 +5,32 @@ const FileManager = require("../../../services/FileManager");
 const bookingRepository = require("../repository/booking_repo");
 // services
 const EmailService = require("../../../services/EmailService");
+const GetPriceUseCase = require("../../prices/usecases/GetPriceUseCase");
 
 class BookingController {
   async createBooking(req, res, next) {
     try {
       const data = req.body;
+      const price = await GetPriceUseCase.execute({
+        plannedShippingDateAndTime: data.plannedShippingDateAndTime,
+        deliveryType: data.deliveryType,
+        document: data.document,
+        packages: (function parsePackges() {
+          const packages = [...data.content.packages];
+          return packages.map((p) => {
+            delete p.description;
+            return p;
+          });
+        })(),
+        customerDetails: {
+          shipperDetails: data.sender.postalAddress,
+          receiverDetails: data.receiver.postalAddress,
+        },
+      });
       const { shipmentData, contactData } =
         await CreateDhlShipmentUseCase.execute(data);
       data.bookingData = {};
-      data.bookingData.bookingCost = data.bookingCost;
+      data.bookingData.bookingCost = price;
       data.bookingData.packages = data.content.packages;
       data.bookingData.description = data.content.description;
       data.bookingData.number_items = data.content.packages.length;

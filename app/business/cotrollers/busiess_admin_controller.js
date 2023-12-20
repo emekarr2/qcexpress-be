@@ -106,7 +106,7 @@ class BusinessAdminController {
             {
               $group: {
                 _id: null,
-                declaredValue: { $sum: "$declaredValue" },
+                bookingCost: { $sum: "$bookingCost" },
               },
             },
           ]),
