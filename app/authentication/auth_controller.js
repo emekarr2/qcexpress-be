@@ -11,7 +11,8 @@ const ServerResponse = require("../../utils/response");
 
 // services
 const EmailService = require("../../services/EmailService");
-const { decrypt } = require("../../utils/encrypter");
+const GenerateBusinessUserPasswordResetLinkUseCase = require("./usecases/Authentication/GenerateBusinessUserPasswordResetLinkUseCase");
+const ResetBusinessUserPasswordUseCase = require("./usecases/Authentication/ResetBusinessUserPasswordUseCase");
 
 class AuthController {
   async resendOtp(req, res, next) {
@@ -64,6 +65,25 @@ class AuthController {
       next(err);
     }
   }
+  async businessUserPasswordResetLink(req, res, next) {
+    try {
+      const { email } = req.body;
+      const link = await GenerateBusinessUserPasswordResetLinkUseCase.execute(
+        email
+      );
+      await EmailService.sendNodemailer(email, "Reset Password", {
+        header: "Password Reset Link",
+        name: "QC User",
+        body: `A password reset link was request for your account. If you authorised this click the link below and change your password\n
+        If you did not please contact support immediately.\n\n\n${link}`,
+      });
+      ServerResponse.message("link sent successfully")
+        .statusCode(200)
+        .respond(res);
+    } catch (err) {
+      next(err);
+    }
+  }
 
   async resetPassword(req, res, next) {
     try {
@@ -74,6 +94,31 @@ class AuthController {
           .statusCode(400)
           .respond(res);
       await ResetPasswordUseCase.execute(token, req.body.password);
+      ServerResponse.message("password reset successfully")
+        .statusCode(200)
+        .respond(res);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async resetBusinessUserPassword(req, res, next) {
+    try {
+      const { token } = req.body;
+      if (!token)
+        return ServerResponse.message("token is requred for this route")
+          .success(false)
+          .statusCode(400)
+          .respond(res);
+      const email = await ResetBusinessUserPasswordUseCase.execute(
+        token,
+        req.body.password
+      );
+      await EmailService.sendNodemailer(email, "Password Updated", {
+        header: "Your password has been successfully updated",
+        name: "QC User",
+        body: `This is to inform you that your account password has been changed.\nIf this was not you please contact support.`,
+      });
       ServerResponse.message("password reset successfully")
         .statusCode(200)
         .respond(res);

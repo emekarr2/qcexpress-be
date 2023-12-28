@@ -8,17 +8,16 @@ const GenerateOtpUseCase = require("../../authentication/usecases/Otp/GenerateOt
 const CustomError = require("../../../errors/error");
 const { encrypt } = require("../../../utils/encrypter");
 const crypto = require("crypto");
-const sendgrid = require("../../../services/SendGrid");
+const EmailService = require("../../../services/EmailService");
 
 class OnboardingRequestController {
   async sendOnboardingRequest(req, res, next) {
     try {
       const body = req.body;
       const request = await CreateOnboardingRequestUsecase.execute(body);
-      await sendgrid.sendEmail(
+      await EmailService.sendNodemailer(
         request.email,
         "Your request has been recieved",
-        "plain",
         {
           header:
             "Your request to access QCExpress Developer API has been recieved",
@@ -67,16 +66,15 @@ class OnboardingRequestController {
       request.status = "rejected";
       await onboarding_request_repo.saveData(request);
       // send rejection email
-      await sendgrid.sendEmail(
+      await EmailService.sendNodemailer(
         request.email,
         "We have an update on your onboarding request",
-        "plain",
         {
           header:
             "Your request to access QCExpress Developer API has been denied",
           name: request.firstname,
           body: `We are sorry to inform you that your request to access the QCExpress Developer API has been rejected.
-          If you feel this is a mistake reach out to us on customercare@quartzclassic.com`,
+        If you feel this is a mistake reach out to us on customercare@quartzclassic.com`,
           "header-body": "",
         }
       );
@@ -99,19 +97,13 @@ class OnboardingRequestController {
         business: req.admin.business,
         org_name: req.admin.org_name,
       });
-      await sendgrid.sendEmail(
-        payload.email,
-        "Welcome to QCExpress",
-        "plain",
-        {
-          header:
-            "You have been invited to the QCExpress Developer Dashboard",
-          name: payload.firstname,
-          body: `Your password to the dashboard is ${payload.password}.
-          Use it to log into the Dashbaord and change them immediately.`,
-          "header-body": "",
-        }
-      );
+      await EmailService.sendNodemailer(payload.email, "Welcome to QCExpress", {
+        header: "You have been invited to the QCExpress Developer Dashboard",
+        name: payload.firstname,
+        body: `Your password to the dashboard is ${payload.password}.
+            Use it to log into the Dashbaord and change them immediately.`,
+        "header-body": "",
+      });
       ServerResponse.message("admin created. send login details to admin")
         .data(result)
         .success(true)
@@ -201,18 +193,16 @@ class OnboardingRequestController {
         business: business._id,
         password,
       });
-      // send onboarding email
-      await sendgrid.sendEmail(
+      await EmailService.sendNodemailer(
         request.email,
         "We have an update on your onboarding request",
-        "plain",
         {
           header:
             "Your request to access QCExpress Developer API has been approved",
           name: request.firstname,
           body: `We are pleased to inform you that your request to access the QCExpress Developer API has been approved.
-          \nYour password to the dashboard is ${password}.
-          Use it to log into the Dashbaord and change them immediately.`,
+        \nYour password to the dashboard is ${password}.
+        Use it to log into the Dashbaord and change them immediately.`,
           "header-body": "",
         }
       );
