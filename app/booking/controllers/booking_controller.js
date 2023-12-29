@@ -162,7 +162,7 @@ class BookingController {
         {
           ...query,
           customerId: req.admin.business,
-          environment: process.env.ENVIRONMENT,
+          environment: req.body.environment,
           channel: "api",
         },
         {

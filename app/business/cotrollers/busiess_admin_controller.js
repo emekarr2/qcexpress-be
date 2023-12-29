@@ -66,12 +66,12 @@ class BusinessAdminController {
         await Promise.all([
           bookingRepo.count({
             customerId: req.admin.business,
-            environment: process.env.ENVIRONMENT,
+            environment: req.query.environment,
             channel: "api",
           }),
           Booking.find({
             customerId: req.admin.business,
-            environment: process.env.ENVIRONMENT,
+            environment: req.query.environment,
             channel: "api",
           })
             .select("-shipmentMeta.documents")
@@ -81,7 +81,7 @@ class BusinessAdminController {
             {
               $match: {
                 customerId: new ObjectID(req.admin.business),
-                environment: process.env.ENVIRONMENT,
+                environment: req.query.environment,
                 channel: "api",
               },
             },
@@ -99,7 +99,7 @@ class BusinessAdminController {
             {
               $match: {
                 customerId: new ObjectID(req.admin.business),
-                environment: process.env.ENVIRONMENT,
+                environment: req.query.environment,
                 channel: "api",
               },
             },
