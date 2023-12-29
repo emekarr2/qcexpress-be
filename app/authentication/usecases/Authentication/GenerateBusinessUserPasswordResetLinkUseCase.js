@@ -11,7 +11,7 @@ class GeneratePasswordResetLinkUseCase {
 		const user = await this.#userRepo.findOneByFields({ email });
 		if (!user) throw new CustomError('user does not exist', 404);
 		const token = await this.#tokens.generateTokens({ email }, 600);
-		return `https://qc-express.netlify.app/reset?token=${token}`;
+		return `https://developers.qcexpress.co/reset?token=${token}`;
 	}
 }
 
