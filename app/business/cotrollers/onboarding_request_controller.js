@@ -16,6 +16,17 @@ class OnboardingRequestController {
       const body = req.body;
       const request = await CreateOnboardingRequestUsecase.execute(body);
       await EmailService.sendNodemailer(
+        "customercare@quartzclassic.com",
+        "A new request for QCExpress API has been recorded",
+        {
+          header:
+            `There has been a new request from ${body.company_name} to get access to the QCExpress Developer API`,
+          name: request.firstname,
+          body: "Visit the admin dashboard to review the details submited, access the companys contact information and also reject/accept the compants request.",
+          "header-body": "",
+        }
+      );
+      await EmailService.sendNodemailer(
         request.email,
         "Your request has been recieved",
         {
