@@ -16,6 +16,7 @@ class CreateZoneRatesUseCase {
     if (payload.min >= payload.max) {
       throw new CustomError("min cannot be greater or equal to max", 400);
     }
+    result.value.zone = result.value.zone.charAt(0).toLowerCase() + result.value.zone.slice(1);
     return await this.zoneRateRepo.createEntry(result.value);
   }
 }

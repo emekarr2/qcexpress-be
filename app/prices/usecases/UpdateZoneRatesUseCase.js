@@ -13,6 +13,7 @@ class UpdateZoneRatesUseCase {
     if (result.error) {
       throw new CustomError(result.error.message, 400);
     }
+    result.value.zone = result.value.zone.charAt(0).toLowerCase() + result.value.zone.slice(1);
     return await this.zoneRateRepo.updateById(id, result.value);
   }
 }
