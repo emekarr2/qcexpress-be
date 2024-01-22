@@ -82,9 +82,11 @@ module.exports = class HttpService {
   async _handleRequest(requestPromise) {
     try {
       const response = await Promise.resolve(requestPromise);
+      console.log('response',response)
       return response.data;
     } catch (e) {
       let message = this.__error.message;
+      console.log('HTTPSERVICE ERROR', message)
       if (e.request?.res?.statusCode === 404) {
         return null;
       }
@@ -92,8 +94,7 @@ module.exports = class HttpService {
         if (e.isAxiosError && this.__error.useAsDefault) {
           message = e.response?.data ?? e.response ?? message;
         }
-      }
-      if (typeof this.__error.handler === "function") {
+      } else if (typeof this.__error.handler === "function") {
         message = this.__error.handler.call(this, message);
       }
       // console.log(message);
