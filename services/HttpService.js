@@ -82,7 +82,6 @@ module.exports = class HttpService {
   async _handleRequest(requestPromise) {
     try {
       const response = await Promise.resolve(requestPromise);
-      console.log('response',response)
       return response.data;
     } catch (e) {
       let message = this.__error.message;

@@ -15,7 +15,7 @@ module.exports = (businessOnly) => async (req, res, next) => {
     const bearer = tokenHeader.split(" ")[1];
     // check to see if it is an apikey
     const clientID = req.headers.clientid;
-    if (!clientID) {
+    if (clientID) {
       const business = await buiness_repo.findById(clientID);
       if (!business)
         return ServerResponse.message("invalid client id")
@@ -37,10 +37,6 @@ module.exports = (businessOnly) => async (req, res, next) => {
           .statusCode(403)
           .respond(res);
       }
-      console.log(environment);
-      console.log("env ", process.env.ENVIRONMENT);
-      console.log("env ", process.env.ENVIRONMENT);
-      console.log("env ", process.env.ENVIRONMENT);
       if (environment !== process.env.ENVIRONMENT) {
         return ServerResponse.message("wrong access token used")
           .success(false)
