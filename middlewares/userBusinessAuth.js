@@ -15,7 +15,7 @@ module.exports = (businessOnly) => async (req, res, next) => {
     const bearer = tokenHeader.split(" ")[1];
     // check to see if it is an apikey
     const clientID = req.headers.clientid;
-    if (typeof clientID !== "undefined") {
+    if (!clientID) {
       const business = await buiness_repo.findById(clientID);
       if (!business)
         return ServerResponse.message("invalid client id")
