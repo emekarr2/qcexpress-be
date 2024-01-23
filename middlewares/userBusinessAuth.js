@@ -37,6 +37,12 @@ module.exports = (businessOnly) => async (req, res, next) => {
           .statusCode(403)
           .respond(res);
       }
+      if (environment !== process.env.ENVIRONMENT) {
+        return ServerResponse.message("wrong access token used")
+          .success(false)
+          .statusCode(403)
+          .respond(res);
+      }
       const plainKey = decrypt(token);
       if (plainKey !== tokenParts[1])
         return ServerResponse.message("invalid credentials")
@@ -44,7 +50,6 @@ module.exports = (businessOnly) => async (req, res, next) => {
           .statusCode(403)
           .respond(res);
       req.reqState = {
-        environment,
         name: business.org_name,
         email: business.email,
         website: business.phonenumber,
@@ -67,8 +72,7 @@ module.exports = (businessOnly) => async (req, res, next) => {
       req.user.lastname = result.lastname;
       req.user.verified_email = result.verified_email;
       req.user.verified_mobile = result.verified_mobile;
-      req.user.channel = 'qc'
-      req.user.environment = process.env.ENVIRONMENT
+      req.user.channel = "qc";
     }
     next();
   } catch (err) {

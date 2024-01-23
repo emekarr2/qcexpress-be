@@ -42,6 +42,9 @@ module.exports = async (req, res, next) => {
         .statusCode(403)
         .respond(res);
     }
+    if (environment !== process.env.ENVIRONMENT) {
+      return ServerResponse.message("wrong access token used");
+    }
     const plainKey = decrypt(token);
     if (plainKey !== tokenParts[1])
       return ServerResponse.message("invalid credentials")
