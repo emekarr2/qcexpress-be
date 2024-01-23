@@ -11,6 +11,8 @@ router.post(
   BookingController.createBooking
 );
 
+router.get("/regions", userBusinessAuth(false), BookingController.fetchRegion);
+
 router.get(
   "/download-docs",
   businessAdminAuth("2"),

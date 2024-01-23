@@ -6,6 +6,8 @@ const bookingRepository = require("../repository/booking_repo");
 // services
 const EmailService = require("../../../services/EmailService");
 const GetPriceUseCase = require("../../prices/usecases/GetPriceUseCase");
+const CustomError = require("../../../errors/error");
+const RegionService = require("../../../services/RegionService");
 
 class BookingController {
   async createBooking(req, res, next) {
@@ -103,6 +105,27 @@ class BookingController {
         .statusCode(200)
         // .data(Buffer.from(new Uint8Array(ab)))
         .data(booking.shipmentMeta.documents)
+        .respond(res);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async fetchRegion(req, res, next) {
+    try {
+      const state = req.query.state;
+      if (!state) {
+        throw new CustomError("state is required", 400);
+      }
+      const foundState = RegionService.states.find((s) => {
+        return s.state.toLocaleLowerCase() == state.toLowerCase();
+      });
+      if (!foundState) throw new CustomError(`State ${state} not found`, 404);
+
+      ServerResponse.message("state data fetched")
+        .success(true)
+        .statusCode(200)
+        .data(foundState)
         .respond(res);
     } catch (err) {
       next(err);
