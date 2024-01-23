@@ -42,6 +42,10 @@ module.exports = async (req, res, next) => {
         .statusCode(403)
         .respond(res);
     }
+    console.log(environment);
+    console.log("env ", process.env.ENVIRONMENT);
+    console.log("env ", process.env.ENVIRONMENT);
+    console.log("env ", process.env.ENVIRONMENT);
     if (environment !== process.env.ENVIRONMENT) {
       return ServerResponse.message("wrong access token used");
     }
