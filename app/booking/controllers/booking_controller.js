@@ -54,17 +54,19 @@ class BookingController {
         const ab = FileManager.base64ToArrayBuffer(
           result.shipmentMeta.documents[0].content
         );
-        await EmailService.send({
-          from: process.env.MAIL_SENDER_EMAIL,
-          to: req.user.email,
-          subject: "Your booking was successful",
-          template: "booking",
-          payload: {
-            "v:name": `${req.user.firstname} ${req.user.lastname}`,
-            "v:tracking": result.shipmentMeta.trackingId,
-            attachment: Buffer.from(new Uint8Array(ab)),
+
+        await EmailService.sendNodemailer(
+          req.user.email,
+          "Your booking was successful",
+          {
+            header: "Verify your account using this OTP",
+            name: payload.firstname,
+            body: `Dear ${req.user.firstname} ${req.user.lastname} your booking on QC express was successful.\n
+        Tracking ID - ${result.shipmentMeta.trackingId}`,
+            "header-body": "",
           },
-        });
+          Buffer.from(new Uint8Array(ab))
+        );
         ServerResponse.message("success")
           .success(true)
           .statusCode(200)

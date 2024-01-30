@@ -19,12 +19,11 @@ class AuthController {
     try {
       const { email } = req.query;
       const code = await GenerateOtpUseCase.execute(email);
-      await EmailService.send({
-        from: process.env.MAIL_SENDER_EMAIL,
-        to: email,
-        subject: "Verify OTP",
-        template: "otp_verify",
-        payload: { "v:token": code },
+      await EmailService.sendNodemailer(email, "Verify OTP", {
+        header: "Verify your account using this OTP",
+        body: `Password Reset code\n
+          ${code}`,
+        "header-body": "",
       });
       ServerResponse.message("otp sent successfully")
         .statusCode(200)
@@ -51,12 +50,12 @@ class AuthController {
     try {
       const { email } = req.body;
       const link = await GeneratePasswordResetLinkUseCase.execute(email);
-      await EmailService.send({
-        from: process.env.MAIL_SENDER_EMAIL,
-        to: email,
-        subject: "Reset Password",
-        template: "forgot",
-        payload: { "v:token": link },
+      await EmailService.sendNodemailer(email, "Reset Password", {
+        header: "Verify your account using this OTP",
+        name: payload.firstname,
+        body: `Password Reset link\n
+          ${link}`,
+        "header-body": "",
       });
       ServerResponse.message("link sent successfully")
         .statusCode(200)

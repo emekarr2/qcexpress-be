@@ -33,12 +33,13 @@ class EmailService {
     console.log(`email sent to ${to}`);
   }
 
-  async sendNodemailer(to, subject, opts) {
+  async sendNodemailer(to, subject, opts, attachments) {
     await this.#nodemailer.sendMail({
       from: "support@quartzclassic.com",
       to,
       subject,
       html: await this.__loadTemplate(`./email/templates/plain`, opts),
+      attachments,
     });
     console.log("email sent to " + to);
   }
