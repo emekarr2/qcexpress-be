@@ -65,7 +65,12 @@ class BookingController {
         Tracking ID - ${result.shipmentMeta.trackingId}`,
             "header-body": "",
           },
-          Buffer.from(new Uint8Array(ab))
+          [
+            {
+              filename: "reciept.pdf",
+              content: Buffer.from(new Uint8Array(ab)),
+            },
+          ]
         );
         ServerResponse.message("success")
           .success(true)
