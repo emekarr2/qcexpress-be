@@ -60,7 +60,7 @@ class BookingController {
           "Your booking was successful",
           {
             header: "Verify your account using this OTP",
-            name: payload.firstname,
+            name: req.user.firstname,
             body: `Dear ${req.user.firstname} ${req.user.lastname} your booking on QC express was successful.\n
         Tracking ID - ${result.shipmentMeta.trackingId}`,
             "header-body": "",
