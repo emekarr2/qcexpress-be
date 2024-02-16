@@ -22,7 +22,7 @@ class UserController {
 
       await EmailService.sendNodemailer(data.email, "Verify OTP", {
         header: "Verify your account using this OTP",
-        name: payload.firstname,
+        name: data.firstname,
         body: `Your OTP is ${code}.`,
         "header-body": "",
       });
